@@ -1,34 +1,41 @@
 ﻿@model CoreSimpam.ViewModel.RoleViewModel
+@section styles{
+    <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .table tr td {
+            vertical-align: middle;
+        }
+    </style>
+}
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2">
-    <h1 class="h2">@ViewData["Title"]</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <button class="btn btn-sm btn-primary" id="btnAdd">Add</button>
+<div class="col-sm-12">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">@ViewData["Title"]</h3>
+            <div class="card-tools">
+                <button class="btn btn-tool btn-outline-primary" id="btnAdd">Add</button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">RoleName</th>
+                                <th scope="col">Status</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Roles)
-            {
-                <tr>
-                    <th scope="row">@item.RoleID</th>
-                    <td>@item.RoleName</td>
-                    <td>@item.IsEnabled</td>
-                    <td>@@mdo</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+
 
 <div class="modal fade" id="modal-input" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -37,10 +44,16 @@
     </div>
 </div>
 @section Scripts{
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            bindDatatable();
+        });
+
         $('#btnAdd').click(function () {
-            $('#btnAdd').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-            $('#btnAdd').attr('disabled', true);
+            Loading(true, "#btnAdd", "Add");
             $.ajax({
                 url: '@Url.Action("Add")',
                 type: 'get',
@@ -49,11 +62,144 @@
                     $("#modal-input").find(".modal-dialog").addClass("modal-md");
                     $('#modal-input').find('.modal-content').html(dd);
                     $('#modal-input').modal('show');
-                    $('#btnAdd').html('Add');
-                    $('#btnAdd').attr('disabled', false);
+                    Loading(false, "#btnAdd", "Add");
                 }
             });
         });
 
+        function bindDatatable() {
+            datatable = $('#tbList')
+                .DataTable({
+                    "sAjaxSource": '@Url.Action("GetData")',
+                    "destroy": true,
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": true,
+                    "order": [[1, 'asc']],
+                    "responsive": true,
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading... '
+                    },
+                    "columnDefs": [{ orderable: false, targets: [3]}],
+                    "columns": [
+                        {
+                            "data": null,
+                            "searchable": false,
+                            "render": function (data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            "data": "roleName",
+                            "searchable": true
+                        },
+                        {
+                            "data": "isEnabled",
+                            "searchable": true,
+                            "render": function (data) {
+                                return data ? "Enable" : "Disable";
+                            },
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                if (cellData === false) {
+                                    $(td).addClass('text-danger');
+                                }
+                            }
+                        },
+                        {
+                            "data": null,
+                            "searchable": false,
+                            "render": function (data, type, row) {
+                                //console.table(data);
+                                return '<button class="btn btn-primary mr-2 p-0 px-1" type="button" value="' + data.roleID + '" id="btnEdit"><i class="fas fa-edit"></i>Edit</button><button class="btn btn-danger mr-2 p-0 px-1" type="button" value="' + data.roleID +'" id="btnDelete"><i class="far fa-trash-alt"></i>Delete</button>';
+                            },
+                            "createdCell": function (td, cellData, rowData, row, col) {
+                                $(td).addClass('text-center');
+                            }
+                        },
+                    ]
+                });
+        }
+
+        $('#modal-input').on('submit', '#input-form', function () {
+            $.ajax({
+                url: $(this).attr('Action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                method: 'post',
+                success: function (x) {
+                    if (x.status == true) {
+                        $('#modal-input').modal('hide');
+                        bindDatatable();
+                    }
+                    else {
+                        $("#modal-input").find(".modal-body").html(x);
+                        //alert(x.data);
+                    }
+                }
+            });
+            return false;
+        });
+
+        $('#tbList').on("click", "#btnEdit", function () {
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                type: 'get',
+                data: { id: $(this).val() },
+                dataType: 'html',
+                success: function (dd) {
+                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                    $('#modal-input').find('.modal-content').html(dd);
+                    $('#modal-input').modal('show');
+                }
+            });
+            return false;
+        });
+
+        $('#tbList').on("click", "#btnDelete", function () {
+            var id = $(this).attr('value')
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                        url: '@Url.Action("Delete")',
+                        dataType: 'json',
+                        type: 'post',
+                        data: { id: id },
+                            success: function (x) {
+                                if (x.status == true) {
+                                    swal(
+                                        'Deleted!',
+                                        'Your file has been deleted.',
+                                        'success'
+                                    );
+                                }
+                                else {
+                                    swal(x.data);
+                                }
+                                bindDatatable();
+                        }
+                    });
+                    }
+                });
+            return false;
+        });
+
+        function Loading(isLoad, button, text) {
+            if (isLoad) {
+                $(button).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+            }
+            else {
+                $(button).html(text);
+            }
+            $(button).attr('disabled', isLoad);
+        }
     </script>
 }

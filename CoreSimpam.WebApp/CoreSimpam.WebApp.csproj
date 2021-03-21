@@ -18,4 +18,8 @@
     <ProjectReference Include="..\CoreSimpam.ViewModel\CoreSimpam.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\AdminLTE\" />
+  </ItemGroup>
+
 </Project>
