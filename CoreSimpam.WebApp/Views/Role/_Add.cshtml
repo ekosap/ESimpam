@@ -1,24 +1,32 @@
-﻿<form>
-    <div class="form-group row">
-        <label for="RoleName" class="col-sm-2 col-form-label">Role Name</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="RoleName" placeholder="Role Name">
-        </div>
+﻿@using (Html.BeginForm("Add", "Role", FormMethod.Post, new { @id = "input-form" }))
+{
+    <div class="modal-header">
+        <h5 class="modal-title">@ViewData["Title"]</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <div class="form-group row">
-        <div class="col-sm-2">Status</div>
-        <div class="col-sm-10">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="IsActive">
-                <label class="form-check-label" for="IsActive">
-                    Active
-                </label>
+    <div class="modal-body">
+        <div class="form-group row">
+            <label for="RoleName" class="col-sm-4 col-form-label">Role Name</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="RoleName" placeholder="Role Name">
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-4">Status</div>
+            <div class="col-sm-8">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="IsActive">
+                    <label class="form-check-label" for="IsActive">
+                        Active
+                    </label>
+                </div>
             </div>
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
     </div>
-</form>
+}

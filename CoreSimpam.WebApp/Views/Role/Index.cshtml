@@ -1,21 +1,9 @@
-﻿<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2">
-    <h1 class="h2">@ViewBag.Title</h1>
+﻿@model CoreSimpam.ViewModel.RoleViewModel
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2">
+    <h1 class="h2">@ViewData["Title"]</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <button class="btn btn-sm btn-primary" id="btnAdd">Add</button>
-        <button class="btn btn-primary d-none" type="button" disabled id="btnLoading">
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Loading...
-        </button>
-    </div>
-</div>
-<div id="div1" class="d-none d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2">
-    <h1 class="h2">@ViewBag.Title</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <button class="btn btn-sm btn-primary">Add</button>
-        <button class="btn btn-primary d-none" type="button" disabled>
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Loading...
-        </button>
     </div>
 </div>
 <div class="table-responsive">
@@ -29,43 +17,43 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@@twitter</td>
-            </tr>
+            @foreach (var item in Model.Roles)
+            {
+                <tr>
+                    <th scope="row">@item.RoleID</th>
+                    <td>@item.RoleName</td>
+                    <td>@item.IsEnabled</td>
+                    <td>@@mdo</td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
+
+<div class="modal fade" id="modal-input" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
 @section Scripts{
     <script type="text/javascript">
-        var btnAdd = document.getElementById("btnAdd");
-        var btnLoading = document.getElementById("btnLoading");
-        var div1 = document.getElementById("div1");
-        btnAdd.addEventListener('click', function (e) {
-            e.preventDefault();
-            btnAdd.classList.toggle("d-none");
-            btnLoading.classList.toggle("d-none");
+        $('#btnAdd').click(function () {
+            $('#btnAdd').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
+            $('#btnAdd').attr('disabled', true);
             $.ajax({
                 url: '@Url.Action("Add")',
-                success: function (result) {
-                    div1.classList.toggle("d-none");
-                    div1.innerHTML =result;
+                type: 'get',
+                dataType: 'html',
+                success: function (dd) {
+                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                    $('#modal-input').find('.modal-content').html(dd);
+                    $('#modal-input').modal('show');
+                    $('#btnAdd').html('Add');
+                    $('#btnAdd').attr('disabled', false);
                 }
             });
         });
+
     </script>
 }
