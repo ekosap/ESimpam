@@ -11,6 +11,21 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
     public class RoleController : Controller
     {
+        private RoleViewModel Roles
+        {
+            get
+            {
+                if (ViewData["roles"] == null)
+                {
+                    ViewData["roles"] = _repo.GetAll(new RoleQuery()).Result.data;
+                }
+                return (RoleViewModel)ViewData["roles"];
+            }
+            set
+            {
+                ViewData["roles"] = value ?? _repo.GetAll(new RoleQuery()).Result.data;
+            }
+        }
         private readonly IRoleRepo _repo;
 
         public RoleController(IRoleRepo repo)
@@ -22,44 +37,32 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             ViewData["Title"] = "Application Role";
             return await Task.FromResult(View());
         }
-        public async Task<IActionResult> GetData(JqueryDatatableParam param)
+        public IActionResult GetData(JqueryDatatableParam param)
         {
-            var employees = await _repo.GetAll(new RoleQuery());
+            var dataroles = Roles;
 
-            //employees.data.Roles.ForEach(x => x. = x.StartDate.ToString("dd'/'MM'/'yyyy"));
+            //dataroles.data.Roles.ForEach(x => x. = x.StartDate.ToString("dd'/'MM'/'yyyy"));
 
             if (!string.IsNullOrEmpty(param.sSearch))
             {
-                employees.data.Roles = employees.data.Roles.Where(x => x.RoleName.ToLower().Contains(param.sSearch.ToLower())).ToList();
+                dataroles.Roles = dataroles.Roles.Where(
+                    x => x.RoleName.ToLower().Contains(param.sSearch.ToLower())
+                    || (x.IsEnabled ? "Enable" : "Disable").ToLower().Contains(param.sSearch.ToLower())
+                    ).ToList();
             }
 
             var sortColumnIndex = Convert.ToInt32(HttpContext.Request.Query["iSortCol_0"]);
             var sortDirection = HttpContext.Request.Query["sSortDir_0"];
 
-            //if (sortColumnIndex == 3)
-            //{
-            //    employees.data.Roles = sortDirection == "asc" ? employees.data.Roles.OrderBy(c => c.Age) : employees.data.Roles.OrderByDescending(c => c.Age);
-            //}
-            //else if (sortColumnIndex == 4)
-            //{
-            //    employees = sortDirection == "asc" ? employees.data.Roles.OrderBy(c => c.StartDate) : employees.data.Roles.OrderByDescending(c => c.StartDate);
-            //}
-            //else if (sortColumnIndex == 5)
-            //{
-            //    employees = sortDirection == "asc" ? employees.OrderBy(c => c.Salary) : employees.OrderByDescending(c => c.Salary);
-            //}
-            //else
-            //{
-            //    Func<Employee, string> orderingFunction = e => sortColumnIndex == 0 ? e.Name :
-            //                                                   sortColumnIndex == 1 ? e.Position :
-            //                                                   e.Location;
+            Func<RoleViewModel, string> orderingFunction = e =>
+                sortColumnIndex == 2 ? (e.IsEnabled ? "Enable" : "Disable") :
+                sortColumnIndex == 1 ? e.RoleName : e.RoleID.ToString();
 
-            //    employees = sortDirection == "asc" ? employees.OrderBy(orderingFunction) : employees.OrderByDescending(orderingFunction);
-            //}
+            dataroles.Roles = sortDirection == "asc" ? dataroles.Roles.OrderBy(orderingFunction).ToList() : dataroles.Roles.OrderByDescending(orderingFunction).ToList();
 
-            var displayResult = employees.data.Roles.Skip(param.iDisplayStart)
+            var displayResult = dataroles.Roles.Skip(param.iDisplayStart)
                 .Take(param.iDisplayLength).ToList();
-            var totalRecords = employees.data.Roles.Count();
+            var totalRecords = dataroles.Roles.Count();
 
             return Json(new
             {
@@ -83,6 +86,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var res = await _repo.Insert(model);
+                if (res.status) Roles = null;
                 return Json(res);
             }
             return PartialView("_Add", model);
@@ -101,6 +105,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var res = await _repo.Update(model);
+                if (res.status) Roles = null;
                 return Json(res);
             }
             return PartialView("_Edit", model);
@@ -108,7 +113,8 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Delete(long id)
         {
             var model = await _repo.Delete(id);
-            return Json(model); 
+            if (model.status) Roles = null;
+            return Json(model);
         }
     }
 }
