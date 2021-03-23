@@ -41,8 +41,6 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         {
             var dataroles = Roles;
 
-            //dataroles.data.Roles.ForEach(x => x. = x.StartDate.ToString("dd'/'MM'/'yyyy"));
-
             if (!string.IsNullOrEmpty(param.sSearch))
             {
                 dataroles.Roles = dataroles.Roles.Where(

@@ -15,9 +15,9 @@ namespace CoreSimpam.Repo
     {
         Task<Metadata<RoleViewModel>> GetAll(RoleQuery query);
         Task<Metadata<RoleViewModel>> GetByID(long RoleID);
-        Task<Metadata<string>> Insert(RoleViewModel model);
-        Task<Metadata<string>> Update(RoleViewModel model);
-        Task<Metadata<string>> Delete(long RoleID);
+        Task<Metadata> Insert(RoleViewModel model);
+        Task<Metadata> Update(RoleViewModel model);
+        Task<Metadata> Delete(long RoleID);
     }
     public class RoleRepo : IRoleRepo
     {
@@ -27,14 +27,14 @@ namespace CoreSimpam.Repo
         {
             context = dBContext;
         }
-        public async Task<Metadata<string>> Delete(long RoleID)
+        public async Task<Metadata> Delete(long RoleID)
         {
-            Metadata<string> res = new Metadata<string>();
+            Metadata res = new Metadata();
             try
             {
                 var dataRoles = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == RoleID);
                 if (dataRoles == null)
-                    return new Metadata<string>() { status = false, data = "Data not found" };
+                    return new Metadata() { status = false, data = "Data not found" };
 
                 context.Remove(dataRoles);
                 await context.SaveChangesAsync();
@@ -77,14 +77,14 @@ namespace CoreSimpam.Repo
             return res;
         }
 
-        public async Task<Metadata<string>> Insert(RoleViewModel model)
+        public async Task<Metadata> Insert(RoleViewModel model)
         {
-            Metadata<string> res = new Metadata<string>();
+            Metadata res = new Metadata();
             try
             {
                 var dataRoles = await context.Roles.AnyAsync(x=> x.RoleName.Contains(model.RoleName));
                 if (dataRoles)
-                    return new Metadata<string>() { status = false, data = "Role name is ready" };
+                    return new Metadata() { status = false, data = "Role name is ready" };
 
                 await context.Roles.AddAsync(new Model.RoleModel()
                 {
@@ -104,9 +104,9 @@ namespace CoreSimpam.Repo
             return res;
         }
 
-        public async Task<Metadata<string>> Update(RoleViewModel model)
+        public async Task<Metadata> Update(RoleViewModel model)
         {
-            Metadata<string> res = new Metadata<string>();
+            Metadata res = new Metadata();
             try
             {
                 var dataRoles = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == model.RoleID);

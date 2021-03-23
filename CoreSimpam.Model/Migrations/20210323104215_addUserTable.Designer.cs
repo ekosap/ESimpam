@@ -3,14 +3,16 @@ using CoreSimpam.Model.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreSimpam.Model.Migrations
 {
     [DbContext(typeof(SimpamDBContext))]
-    partial class SimpamDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210323104215_addUserTable")]
+    partial class addUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +59,6 @@ namespace CoreSimpam.Model.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("RoleID")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Salt")
                         .HasColumnType("nvarchar(max)");
 
@@ -68,20 +67,7 @@ namespace CoreSimpam.Model.Migrations
 
                     b.HasKey("UserID");
 
-                    b.HasIndex("RoleID");
-
                     b.ToTable("Users", "Common");
-                });
-
-            modelBuilder.Entity("CoreSimpam.Model.UserModel", b =>
-                {
-                    b.HasOne("CoreSimpam.Model.RoleModel", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

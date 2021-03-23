@@ -13,4 +13,10 @@
     <ProjectReference Include="..\CoreSimpam.ViewModel\CoreSimpam.ViewModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="CryptSharp">
+      <HintPath>..\CoreSimpam.Model\DAL\CryptSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

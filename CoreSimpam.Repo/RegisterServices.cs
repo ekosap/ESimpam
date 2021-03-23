@@ -10,6 +10,7 @@ namespace CoreSimpam.Repo
         public static IServiceCollection Register(this IServiceCollection services)
         {
             services.AddTransient<IRoleRepo, RoleRepo>();
+            services.AddTransient<IUserRepo, UserRepo>();
             return services;
         }
     }
