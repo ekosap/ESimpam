@@ -134,8 +134,10 @@
                         bindDatatable();
                     }
                     else {
-                        $("#modal-input").find(".modal-body").html(x);
-                        //alert(x.data);
+                        if (x.data == null || x.data == undefined)
+                            $("#modal-input").find(".modal-body").html(x);
+                        else
+                            alert(x.data);
                     }
                 }
             });

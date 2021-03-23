@@ -24,9 +24,15 @@ namespace CoreSimpam.WebApp
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            //services.AddDbContext<Model.Data.SimpamDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<Model.Data.SimpamDBContext>(option => option.UseNpgsql(Configuration.GetConnectionString("PostgreSQL")));
+        {            
+            if(Configuration.GetSection("ConnectionString")["provider"] == "postgresql")
+            {
+                services.AddDbContext<Model.Data.SimpamDBContext>(option => option.UseNpgsql(Configuration.GetConnectionString("PostgreSQL")));
+            }
+            else
+            {
+                services.AddDbContext<Model.Data.SimpamDBContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
             services.AddControllersWithViews();
             services.Register();
         }

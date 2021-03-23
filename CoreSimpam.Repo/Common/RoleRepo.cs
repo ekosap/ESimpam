@@ -82,6 +82,10 @@ namespace CoreSimpam.Repo
             Metadata<string> res = new Metadata<string>();
             try
             {
+                var dataRoles = await context.Roles.AnyAsync(x=> x.RoleName.Contains(model.RoleName));
+                if (dataRoles)
+                    return new Metadata<string>() { status = false, data = "Role name is ready" };
+
                 await context.Roles.AddAsync(new Model.RoleModel()
                 {
                     RoleName = model.RoleName,
