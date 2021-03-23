@@ -11,14 +11,14 @@ namespace CoreSimpam.Model.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RoleModel>().HasData(
-                new RoleModel
-                {
-                    RoleID = 1,
-                    RoleName = "root",
-                    IsEnabled = true
-                }
-            );
+            //modelBuilder.Entity<RoleModel>().HasData(
+            //    new RoleModel
+            //    {
+            //        RoleID = 1,
+            //        RoleName = "root",
+            //        IsEnabled = true
+            //    }
+            //);
         }
         public DbSet<RoleModel> Roles { get; set; }
     }
