@@ -48,3 +48,14 @@ CREATE TABLE "Common"."Users" (
 	"RoleID" int8 NOT NULL DEFAULT 0,
 	CONSTRAINT "PK_Users" PRIMARY KEY ("UserID")
 );
+
+CREATE TABLE "Common"."Screen" (
+	"ScreenID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"ScreenName" varchar(1000) NULL,
+	"ControllerName" varchar(1000) NULL,
+	"ActionName" varchar(1000) NULL,
+	"IsMenu" boolean NOT NULL,
+	"IsActive" boolean NOT NULL,
+	"ParentID" int8 NOT NULL,
+	CONSTRAINT "PK_Screen" PRIMARY KEY ("ScreenID")
+);
