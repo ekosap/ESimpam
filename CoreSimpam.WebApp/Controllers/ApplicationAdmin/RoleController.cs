@@ -1,6 +1,7 @@
 ﻿using CoreSimpam.Repo;
 using CoreSimpam.ViewModel;
 using CoreSimpam.ViewModel.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
+    [Authorize]
     public class RoleController : Controller
     {
         private RoleViewModel Roles

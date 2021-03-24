@@ -1,6 +1,7 @@
 ﻿using CoreSimpam.Repo;
 using CoreSimpam.ViewModel;
 using CoreSimpam.ViewModel.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
+    [Authorize]
     public class UserController : Controller
     {
         private UserViewModel Users
@@ -124,7 +126,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         {
             ViewData["Title"] = "Edit Application User";
             ViewData["roles"] = Roles;
-            ModelState.SkipToValid(new string[] { "Password", "Username" });
+            ModelState.SkipToValid("Password,Username");
             if (ModelState.IsValid)
             {
                 var user = await _repo.Update(model);
