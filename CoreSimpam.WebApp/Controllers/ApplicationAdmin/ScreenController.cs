@@ -2,6 +2,7 @@
 using CoreSimpam.ViewModel;
 using CoreSimpam.ViewModel.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,21 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
                 ViewData["Screen"] = value ?? _repo.GetAll().Result.data;
             }
         }
+        private List<SelectListItem> Parent
+        {
+            get
+            {
+                if (ViewData["xparent"] == null)
+                {
+                    ViewData["xparent"] = _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+                }
+                return (List<SelectListItem>)ViewData["xparent"];
+            }
+            set
+            {
+                ViewData["xparent"] = value ?? _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+            }
+        }
         private readonly IScreenRepo _repo;
 
         public ScreenController(IScreenRepo screenRepo)
@@ -44,12 +60,12 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (!string.IsNullOrEmpty(param.sSearch))
             {
                 data.screens = data.screens.Where(
-                    x => x.ScreenName.ToLower().Contains(param.sSearch.ToLower())
-                    || x.ControllerName.ToLower().Contains(param.sSearch.ToLower())
-                    || x.ActionName.ToLower().Contains(param.sSearch.ToLower())
+                    x => (x.ScreenName ?? string.Empty).ToLower().Contains(param.sSearch.ToLower())
+                    || (x.ControllerName ?? string.Empty).ToLower().Contains(param.sSearch.ToLower())
+                    || (x.ActionName ?? string.Empty).ToLower().Contains(param.sSearch.ToLower())
                     || (x.IsActive ? "Enable" : "Disable").ToLower().Contains(param.sSearch.ToLower())
                     || (x.IsMenu ? "Menu" : "Screen").ToLower().Contains(param.sSearch.ToLower())
-                    || x.ParentName.ToLower().Contains(param.sSearch.ToLower())
+                    || (x.ParentName ?? string.Empty).ToLower().Contains(param.sSearch.ToLower())
                     ).ToList();
             }
 
@@ -82,6 +98,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Add()
         {
             ViewData["Title"] = "Add Application Screen";
+            ViewData["parent"] = Parent;
             return await Task.FromResult(PartialView("_Add"));
         }
         [HttpPost]
@@ -89,10 +106,11 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Add(ScreenViewModel model)
         {
             ViewData["Title"] = "Add Application Screen";
+            ViewData["parent"] = Parent;
             if (ModelState.IsValid)
             {
                 var res = await _repo.Insert(model);
-                if (res.status) Screen = null;
+                if (res.status) { Screen = null; Parent = null; }
                 return Json(res);
             }
             return PartialView("_Add", model);
@@ -100,6 +118,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Edit(long id)
         {
             ViewData["Title"] = "Edit Application Screen";
+            ViewData["parent"] = Parent;
             var model = await _repo.GetByID(id);
             return PartialView("_Edit", model.data);
         }
@@ -108,19 +127,20 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Edit(ScreenViewModel model)
         {
             ViewData["Title"] = "Edit Application Screen";
+            ViewData["parent"] = Parent;
             if (ModelState.IsValid)
             {
                 var res = await _repo.Update(model);
-                if (res.status) Screen = null;
+                if (res.status) { Screen = null; Parent = null; }
                 return Json(res);
             }
             return PartialView("_Edit", model);
         }
         public async Task<IActionResult> Delete(long id)
         {
-            var model = await _repo.Delete(id);
-            if (model.status) Screen = null;
-            return Json(model);
+            var res = await _repo.Delete(id);
+            if (res.status) { Screen = null; Parent = null; }
+            return Json(res);
         }
     }
 }

@@ -111,10 +111,16 @@
                         {
                             "data": "isActive",
                             "searchable": true,
+                            "render": function (data) {
+                                return data ? "Enable" : "Disable";
+                            }
                         },
                         {
                             "data": "isMenu",
                             "searchable": true,
+                            "render": function (data) {
+                                return data ? "Menu" : "Screen";
+                            }
                         },
                         {
                             "data": "parentName",

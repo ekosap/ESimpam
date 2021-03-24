@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
-    [Authorize]
+    //[Authorize]
     public class UserController : Controller
     {
         private UserViewModel Users
@@ -33,15 +33,15 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         {
             get
             {
-                if (ViewData["roles"] == null)
+                if (ViewData["xroles"] == null)
                 {
-                    ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+                    ViewData["xoles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
                 }
-                return (List<SelectListItem>)ViewData["roles"];
+                return (List<SelectListItem>)ViewData["xroles"];
             }
             set
             {
-                ViewData["roles"] = value ?? _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+                ViewData["xroles"] = value ?? _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
             }
         }
         private readonly IUserRepo _repo;
