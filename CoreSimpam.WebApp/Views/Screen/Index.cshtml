@@ -23,8 +23,12 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">RoleName</th>
+                                <th scope="col">Screen Name</th>
+                                <th scope="col">Controller Name</th>
+                                <th scope="col">Action Name</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Parent</th>
                             </tr>
                         </thead>
                     </table>
@@ -93,20 +97,28 @@
                             "data": null,
                             "searchable": true,
                             "render": function (data) {
-                                return '<a value="' + data.roleID + '" id="btnLink" href="">' + data.roleName + '</a>';
+                                return '<a value="'+data.screenID+'" id="btnLink" href="">'+data.screenName+'</a>';
                             }
                         },
                         {
-                            "data": "isEnabled",
+                            "data": "controllerName",
                             "searchable": true,
-                            "render": function (data) {
-                                return data ? "Enable" : "Disable";
-                            },
-                            "createdCell": function (td, cellData, rowData, row, col) {
-                                if (cellData === false) {
-                                    $(td).addClass('text-danger');
-                                }
-                            }
+                        },
+                        {
+                            "data": "actionName",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "isActive",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "isMenu",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "parentName",
+                            "searchable": true,
                         },
                     ]
                 });
@@ -137,22 +149,6 @@
             Loading(false, btn, text);
             return false;
         });
-
-        $('#tbList').on("click", "#btnLink", function () {
-            $.ajax({
-                url: '@Url.Action("Edit")',
-                type: 'get',
-                data: { id: $(this).attr('value') },
-                dataType: 'html',
-                success: function (dd) {
-                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
-                    $('#modal-input').find('.modal-content').html(dd);
-                    $('#modal-input').modal('show');
-                }
-            });
-            return false;
-        });
-
         $("#modal-input").on("click", "#btn-delete", function () {
             var text = $(this).html();
             var id = $(this).attr('value')
@@ -191,5 +187,20 @@
             Loading(false, $(this), text);
             return false;
         });
+        $('#tbList').on("click", "#btnLink", function () {
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                type: 'get',
+                data: { id: $(this).attr('value') },
+                dataType: 'html',
+                success: function (dd) {
+                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                    $('#modal-input').find('.modal-content').html(dd);
+                    $('#modal-input').modal('show');
+                }
+            });
+            return false;
+        });
+
     </script>
 }

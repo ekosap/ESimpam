@@ -45,7 +45,6 @@ namespace CoreSimpam.Repo
         public async Task<Metadata<UserViewModel>> GetAll()
         {
             Metadata<UserViewModel> res = new Metadata<UserViewModel>();
-            res.data = new UserViewModel();
             res.data.users = await context.Users
                 .Join(
                     context.Roles,
@@ -68,15 +67,17 @@ namespace CoreSimpam.Repo
         public async Task<Metadata<UserViewModel>> GetByID(long UserID)
         {
             Metadata<UserViewModel> res = new Metadata<UserViewModel>();
-            res.data = new UserViewModel();
             var data = await context.Users.FirstOrDefaultAsync(x => x.UserID == UserID);
-            var dataRole = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == data.RoleID);
-            res.status = data != null;
-            res.data.UserID = data.UserID;
-            res.data.Email = data.Email;
-            res.data.UserName = data.UserName;
-            res.data.RoleID = data.RoleID;
-            res.data.RoleName = dataRole.RoleName;
+            var dataRole = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == data.RoleID);            
+            if (data != null)
+            {
+                res.status = true;
+                res.data.UserID = data.UserID;
+                res.data.Email = data.Email;
+                res.data.UserName = data.UserName;
+                res.data.RoleID = data.RoleID;
+                res.data.RoleName = dataRole.RoleName;
+            }
             return res;
         }
 

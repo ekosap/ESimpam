@@ -58,7 +58,6 @@ namespace CoreSimpam.Repo
                 RoleName = x.RoleName,
                 IsEnabled = x.IsEnabled
             }).ToList();
-            res.data = new RoleViewModel();
             res.data.Roles = dataRoles.OrderBy(s => s.RoleName).ToList(); 
             res.status = true;
             return await Task.FromResult(res);
@@ -68,12 +67,16 @@ namespace CoreSimpam.Repo
         {
             Metadata<RoleViewModel> res = new Metadata<RoleViewModel>();
             var dataRoles = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == RoleID);
-            res.data = new RoleViewModel() { 
-                RoleID = dataRoles.RoleID,
-                IsEnabled = dataRoles.IsEnabled,
-                RoleName = dataRoles.RoleName
-            };
-            res.status = true;
+            if (dataRoles != null)
+            {
+                res.data = new RoleViewModel()
+                {
+                    RoleID = dataRoles.RoleID,
+                    IsEnabled = dataRoles.IsEnabled,
+                    RoleName = dataRoles.RoleName
+                };
+                res.status = true;
+            }
             return res;
         }
 
