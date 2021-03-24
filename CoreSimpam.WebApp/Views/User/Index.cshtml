@@ -27,7 +27,6 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
-                                <th scope="col"></th>
                             </tr>
                         </thead>
                     </table>
@@ -83,7 +82,7 @@
                         "processing":
                             '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading... '
                     },
-                    "columnDefs": [{ orderable: false, targets: [0,4]}],
+                    "columnDefs": [{ orderable: false, targets: [0]}],
                     "columns": [
                         {
                             "data": null,
@@ -93,8 +92,11 @@
                             }
                         },
                         {
-                            "data": "userName",
-                            "searchable": true
+                            "data": null,
+                            "searchable": true,
+                            "render": function (data) {
+                                return '<a value="'+data.userID+'" id="btnLink" href="">'+data.userName+'</a>';
+                            }
                         },
                         {
                             "data": "email",
@@ -103,17 +105,6 @@
                         {
                             "data": "roleName",
                             "searchable": true,
-                        },
-                        {
-                            "data": null,
-                            "searchable": false,
-                            "render": function (data, type, row) {
-                                //console.table(data);
-                                return '<button class="btn btn-primary mr-2 p-0 px-1" type="button" value="' + data.userID + '" id="btnEdit"><i class="fas fa-edit"></i>Edit</button><button class="btn btn-danger mr-2 p-0 px-1" type="button" value="' + data.userID +'" id="btnDelete"><i class="far fa-trash-alt"></i>Delete</button>';
-                            },
-                            "createdCell": function (td, cellData, rowData, row, col) {
-                                $(td).addClass('text-center');
-                            }
                         },
                     ]
                 });
@@ -139,29 +130,15 @@
                         else
                             alert(x.data);
                     }
-                    Loading(false, btn, text);
                 }
             });
+            Loading(false, btn, text);
             return false;
         });
-
-        $('#tbList').on("click", "#btnEdit", function () {
-            $.ajax({
-                url: '@Url.Action("Edit")',
-                type: 'get',
-                data: { id: $(this).val() },
-                dataType: 'html',
-                success: function (dd) {
-                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
-                    $('#modal-input').find('.modal-content').html(dd);
-                    $('#modal-input').modal('show');
-                }
-            });
-            return false;
-        });
-
-        $('#tbList').on("click", "#btnDelete", function () {
+        $("#modal-input").on("click", "#btn-delete", function () {
+            var text = $(this).html();
             var id = $(this).attr('value')
+            Loading(true, $(this), text);
             swal({
                 title: "Are you sure?",
                 text: "Once deleted, you will not be able to recover this file!",
@@ -176,33 +153,40 @@
                         dataType: 'json',
                         type: 'post',
                         data: { id: id },
-                            success: function (x) {
-                                if (x.status == true) {
-                                    swal(
-                                        'Deleted!',
-                                        'Your file has been deleted.',
-                                        'success'
-                                    );
-                                }
-                                else {
-                                    swal(x.data);
-                                }
-                                bindDatatable();
-                        }
-                    });
+                        success: function (x) {
+                            if (x.status == true) {
+                                swal(
+                                    'Deleted!',
+                                    x.data,
+                                    'success'
+                                );
+                            }
+                            else {
+                                swal(x.data);
+                            }
+                            bindDatatable();
+                            }
+                        });
+                        $("#modal-input").modal('hide');
                     }
                 });
+            Loading(false, $(this), text);
+            return false;
+        });
+        $('#tbList').on("click", "#btnLink", function () {
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                type: 'get',
+                data: { id: $(this).attr('value') },
+                dataType: 'html',
+                success: function (dd) {
+                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                    $('#modal-input').find('.modal-content').html(dd);
+                    $('#modal-input').modal('show');
+                }
+            });
             return false;
         });
 
-        function Loading(isLoad, button, text) {
-            if (isLoad) {
-                button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-            }
-            else {
-                button.html(text);
-            }
-            button.attr('disabled', isLoad);
-        }
     </script>
 }

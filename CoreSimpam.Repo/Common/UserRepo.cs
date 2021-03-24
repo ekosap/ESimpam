@@ -75,8 +75,6 @@ namespace CoreSimpam.Repo
             res.data.UserID = data.UserID;
             res.data.Email = data.Email;
             res.data.UserName = data.UserName;
-            res.data.Salt = data.Salt;
-            res.data.Password = data.Password;
             res.data.RoleID = data.RoleID;
             res.data.RoleName = dataRole.RoleName;
             return res;
@@ -112,14 +110,53 @@ namespace CoreSimpam.Repo
             return res;
         }
 
-        public Task<Metadata> Update(UserViewModel model)
+        public async Task<Metadata> Update(UserViewModel model)
         {
-            throw new NotImplementedException();
+            Metadata res = new Metadata();
+            try
+            {
+                var dataUSer = await context.Users.Where(x => x.UserID == model.UserID).FirstOrDefaultAsync();
+                if (dataUSer == null)
+                    return new Metadata() { status = false, data = "User not found" };
+
+                dataUSer.Email = model.Email;
+                dataUSer.RoleID = model.RoleID;
+
+                await context.SaveChangesAsync();
+                res.status = true;
+                res.data = "Data was successfully updated";
+            }
+            catch (Exception ex)
+            {
+                res.status = false;
+                res.data = ex.Message;
+            }
+
+            return res;
         }
 
-        public Task<Metadata> Delete(long RoleID)
+        public async Task<Metadata> Delete(long UserID)
         {
-            throw new NotImplementedException();
+            Metadata res = new Metadata();
+            try
+            {
+                var dataUSer = await context.Users.Where(x => x.UserID == UserID).FirstOrDefaultAsync();
+                if (dataUSer == null)
+                    return new Metadata() { status = false, data = "User not found" };
+
+                context.Users.Remove(dataUSer);
+
+                await context.SaveChangesAsync();
+                res.status = true;
+                res.data = "Data was successfully deleted";
+            }
+            catch (Exception ex)
+            {
+                res.status = false;
+                res.data = ex.Message;
+            }
+
+            return res;
         }
 
         public async Task<Metadata<UserViewModel>> Validate(string username, string password)

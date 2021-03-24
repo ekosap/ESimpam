@@ -106,6 +106,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var user = await _repo.Insert(model);
+                if (user.status) Users = null;
                 return Json(user);
             }
             return PartialView("_Add", model);
@@ -116,6 +117,27 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             UserViewModel model = (await _repo.GetByID(id)).data;
             ViewData["roles"] = Roles;
             return PartialView("_Edit", model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UserViewModel model)
+        {
+            ViewData["Title"] = "Edit Application User";
+            ViewData["roles"] = Roles;
+            ModelState.SkipToValid(new string[] { "Password", "Username" });
+            if (ModelState.IsValid)
+            {
+                var user = await _repo.Update(model);
+                if (user.status) Users = null;
+                return Json(user);
+            }
+            return PartialView("_Edit", model);
+        }
+        public async Task<IActionResult> Delete(long id)
+        {
+            var model = await _repo.Delete(id);
+            if (model.status) Users = null;
+            return Json(model);
         }
     }
 }

@@ -12,7 +12,7 @@
         <div class="form-group row">
             <label asp-for="Email" class="control-label col-md-4"></label>
             <input asp-for="Email" class="form-control col-md-8" type="email" />
-            <span asp-validation-for="Email" class="order-1 text-danger"></span>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group row">
             <label asp-for="UserName" class="control-label col-md-4"></label>
@@ -27,7 +27,6 @@
         <div class="form-group row">
             <label asp-for="RoleID" class="control-label col-md-4"></label>
             <select asp-for="RoleID" asp-items='(List<SelectListItem>)ViewData["roles"]' class="form-control col-md-8"></select>
-            <span asp-validation-for="Password" class="order-1 text-danger"></span>
         </div>
     </div>
     <div class="modal-footer">

@@ -1,0 +1,50 @@
+-- DROP SCHEMA "Common";
+
+CREATE SCHEMA "Common";
+
+-- DROP SEQUENCE "Common"."Roles_RoleID_seq";
+
+CREATE SEQUENCE "Common"."Roles_RoleID_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;
+-- DROP SEQUENCE "Common"."Users_UserID_seq";
+
+CREATE SEQUENCE "Common"."Users_UserID_seq"
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START 1
+	CACHE 1
+	NO CYCLE;-- "Common"."Roles" definition
+
+-- Drop table
+
+-- DROP TABLE "Common"."Roles";
+
+CREATE TABLE "Common"."Roles" (
+	"RoleID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"RoleName" varchar(254) NULL,
+	"IsEnabled" bool NOT NULL DEFAULT true,
+	CONSTRAINT "PK_Roles" PRIMARY KEY ("RoleID")
+);
+
+
+-- "Common"."Users" definition
+
+-- Drop table
+
+-- DROP TABLE "Common"."Users";
+
+CREATE TABLE "Common"."Users" (
+	"UserID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"UserName" varchar(1000) NULL,
+	"Password" varchar(1000) NULL,
+	"Email" varchar(1000) NULL,
+	"Salt" varchar(1000) NULL,
+	"RoleID" int8 NOT NULL DEFAULT 0,
+	CONSTRAINT "PK_Users" PRIMARY KEY ("UserID")
+);
