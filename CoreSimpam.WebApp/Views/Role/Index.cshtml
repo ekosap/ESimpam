@@ -93,7 +93,7 @@
                             "data": null,
                             "searchable": true,
                             "render": function (data) {
-                                return '<a value="' + data.roleID + '" id="btnLink" href="">' + data.roleName + '</a>';
+                                return '<a value="' + data.stringRoleID + '" id="btnLink" href="">' + data.roleName + '</a>';
                             }
                         },
                         {
@@ -145,9 +145,14 @@
                 data: { id: $(this).attr('value') },
                 dataType: 'html',
                 success: function (dd) {
-                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
-                    $('#modal-input').find('.modal-content').html(dd);
-                    $('#modal-input').modal('show');
+                    if (dd.status === null || dd.status === undefined) {
+                        $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                        $('#modal-input').find('.modal-content').html(dd);
+                        $('#modal-input').modal('show');
+                    }
+                    else {
+                        swal(dd.data);
+                    }
                 }
             });
             return false;

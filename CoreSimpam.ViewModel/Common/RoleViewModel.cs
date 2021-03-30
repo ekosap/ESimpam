@@ -13,5 +13,6 @@ namespace CoreSimpam.ViewModel
         [Display(Name = "Enable")]
         public bool IsEnabled { get; set; }
         public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
+        public string StringRoleID { get; set; }
     }
 }

@@ -91,10 +91,11 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Add", model);
         }
-        public async Task<IActionResult> Edit(long id)
+        public async Task<IActionResult> Edit(string id)
         {
             ViewData["Title"] = "Edit Application Role";
-            var model = await _repo.GetByID(id);
+            if (!long.TryParse(id.FromBase64(), out long RoleID)) return Json(new Metadata() { status = false, data = "RoleID not allow" });
+            var model = await _repo.GetByID(RoleID);
             return PartialView("_Edit", model.data);
         }
         [HttpPost]
@@ -110,9 +111,11 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var model = await _repo.Delete(id);
+            if (!long.TryParse(id.FromBase64(), out long RoleID)) return Json(new Metadata() { status = false, data = "RoleID not allow" });
+            
+            var model = await _repo.Delete(RoleID);
             if (model.status) Roles = null;
             return Json(model);
         }

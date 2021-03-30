@@ -41,7 +41,7 @@ namespace CoreSimpam.WebApp
                 options.LoginPath = "/Login/Index";
                 options.Cookie.Name = "ESWP";
                 options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
             });
         }
 

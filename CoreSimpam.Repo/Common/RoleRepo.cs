@@ -56,7 +56,8 @@ namespace CoreSimpam.Repo
             {
                 RoleID = x.RoleID,
                 RoleName = x.RoleName,
-                IsEnabled = x.IsEnabled
+                IsEnabled = x.IsEnabled,
+                StringRoleID = x.RoleID.ToString().ToBase64()
             }).ToList();
             res.data.Roles = dataRoles.OrderBy(s => s.RoleName).ToList(); 
             res.status = true;
@@ -73,7 +74,8 @@ namespace CoreSimpam.Repo
                 {
                     RoleID = dataRoles.RoleID,
                     IsEnabled = dataRoles.IsEnabled,
-                    RoleName = dataRoles.RoleName
+                    RoleName = dataRoles.RoleName,
+                    StringRoleID = dataRoles.RoleID.ToString().ToBase64()
                 };
                 res.status = true;
             }
@@ -89,7 +91,7 @@ namespace CoreSimpam.Repo
                 if (dataRoles)
                     return new Metadata() { status = false, data = "Role name is ready" };
 
-                await context.Roles.AddAsync(new Model.RoleModel()
+                await context.Roles.AddAsync(new RoleModel()
                 {
                     RoleName = model.RoleName,
                     IsEnabled = model.IsEnabled

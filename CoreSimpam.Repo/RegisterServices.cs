@@ -11,14 +11,16 @@ namespace CoreSimpam.Repo
     {
         public static IServiceCollection Register(this IServiceCollection services)
         {
-            //service scope
+            //service singleton
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            //service scope
             services.AddScoped<ILoginRepo, LoginRepo>();
             //service transient
             services.AddTransient<IRoleRepo, RoleRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IScreenRepo, ScreenRepo>();
+            services.AddTransient<IRoleScreenAccessRepo, RoleScreenAccessRepo>();
             return services;
         }
     }

@@ -23,5 +23,6 @@ namespace CoreSimpam.Model.Data
         public DbSet<RoleModel> Roles { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<ScreenModel> Screen { get; set; }
+        public DbSet<RoleScreenModel> RoleScreen { get; set; }
     }
 }
