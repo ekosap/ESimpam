@@ -59,3 +59,14 @@ CREATE TABLE "Common"."Screen" (
 	"ParentID" int8 NOT NULL,
 	CONSTRAINT "PK_Screen" PRIMARY KEY ("ScreenID")
 );
+
+
+CREATE TABLE "Common"."RoleScreen"(
+	"RoleScreenID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"RoleID" int8 NOT NULL,
+	"ScreenID" int8 NOT NULL,
+	"ReadFlag" boolean NOT NULL,
+	"WriteFlag" boolean NOT NULL,
+	"DeleteFlag" boolean NOT NULL,
+	CONSTRAINT "PK_RoleScreen" PRIMARY KEY ("RoleScreenID")
+);
