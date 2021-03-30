@@ -86,7 +86,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataUSer = await context.Users.AnyAsync(x => x.UserName.Contains(model.UserName));
+                var dataUSer = await context.Users.AnyAsync(x => x.UserName.Contains(model.UserName) && x.UserID != model.UserID);
                 if (dataUSer)
                     return new Metadata() { status = false, data = "User name is ready" };
                 string saltNow = GenerateSalt();
@@ -116,6 +116,9 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
+                var data = await context.Users.AnyAsync(x => x.UserName.Contains(model.UserName) && x.UserID != model.UserID);
+                if (data)
+                    return new Metadata() { status = false, data = "User name is ready" };
                 var dataUSer = await context.Users.Where(x => x.UserID == model.UserID).FirstOrDefaultAsync();
                 if (dataUSer == null)
                     return new Metadata() { status = false, data = "User not found" };
