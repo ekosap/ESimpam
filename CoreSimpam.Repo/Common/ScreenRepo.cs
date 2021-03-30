@@ -33,7 +33,7 @@ namespace CoreSimpam.Repo
             {
                 var data = await context.Screen.Where(x => x.ScreenID == ScreenID).FirstOrDefaultAsync();
                 if (data == null)
-                    return new Metadata() { status = false, data = "Screen not found" };
+                    return new Metadata() { status = false, data = "Screen application not found" };
 
                 context.Screen.Remove(data);
 
