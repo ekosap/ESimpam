@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +11,11 @@ namespace CoreSimpam.Repo
     {
         public static IServiceCollection Register(this IServiceCollection services)
         {
+            //service scope
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddScoped<ILoginRepo, LoginRepo>();
+            //service transient
             services.AddTransient<IRoleRepo, RoleRepo>();
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IScreenRepo, ScreenRepo>();

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
-    //[Authorize]
+    [Authorize]
     public class RoleController : Controller
     {
         private RoleViewModel Roles

@@ -1,6 +1,7 @@
 ﻿using CoreSimpam.Repo;
 using CoreSimpam.ViewModel;
 using CoreSimpam.ViewModel.Query;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
+    [Authorize]
     public class ScreenController : Controller
     {
         private ScreenViewModel Screen

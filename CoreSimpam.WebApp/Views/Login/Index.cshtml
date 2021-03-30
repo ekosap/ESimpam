@@ -1,0 +1,69 @@
+﻿@{Layout = "~/Views/Shared/_LayoutLoginAdminLTE.cshtml";}
+@model CoreSimpam.ViewModel.LoginViewModel
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
+
+        <form asp-action="login" asp-controller="Login" method="post" id="form-login">
+            <input asp-for="ReturnUrl" type="hidden"/>
+            <div class="input-group mb-3">
+                <input asp-for="username" class="form-control" type="text" placeholder="Username" autocomplete="off" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <span asp-validation-for="username" class="order-1 text-danger"></span>
+            <div class="input-group mb-3">
+                <input asp-for="password" class="form-control" type="password" placeholder="Password" />
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
+            </div>
+            <span asp-validation-for="password" class="order-1 text-danger"></span>
+            <div class="row">
+                <div class="col-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-4">
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+
+        <p class="mb-1">
+            <a href="/">I forgot my password</a>
+        </p>
+        <p class="mb-0">
+            <a href="/" class="text-center">Register a new membership</a>
+        </p>
+    </div>
+    <!-- /.login-card-body -->
+</div>
+@section Scripts{
+    <script>
+        $('#form-login').submit(function () {
+            var data = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('Action'),
+                dataType: 'json',
+                type: 'post',
+                data: data,
+                success: function (x) {
+                    if (x.status) {
+                        window.location.href = x.data;
+                    }
+                    else {
+                        swal(x.data);
+                    }
+                }
+            });
+            return false;
+
+        })
+    </script>
+}
