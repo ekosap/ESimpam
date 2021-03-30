@@ -33,13 +33,17 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             {
                 if (ViewData["xparent"] == null)
                 {
-                    ViewData["xparent"] = _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+                    var listItems = _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+                    listItems.Insert(0, new SelectListItem() { Text = "No Parent Menu", Value = "0" });
+                    ViewData["xparent"] = listItems;
                 }
                 return (List<SelectListItem>)ViewData["xparent"];
             }
             set
             {
-                ViewData["xparent"] = value ?? _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+                var listItems = value ?? _repo.GetAll().Result.data.screens.Where(x => x.ParentID == 0).Select(x => new SelectListItem() { Value = x.ScreenID.ToString(), Text = x.ScreenName }).ToList();
+                listItems.Insert(0, new SelectListItem() { Text = "No Parent Menu", Value = "0" });
+                ViewData["xparent"] = listItems;
             }
         }
         private readonly IScreenRepo _repo;
