@@ -19,5 +19,6 @@ namespace CoreSimpam.Model
         public bool IsMenu { get; set; }
         public bool IsActive { get; set; }
         public long ParentID { get; set; }
+        public virtual List<RoleScreenModel> RoleScreens { get; set; }
     }
 }

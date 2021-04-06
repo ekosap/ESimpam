@@ -47,6 +47,9 @@
 @section Scripts{
     <script>
         $('#form-login').submit(function () {
+            var btn = $(this).find("button[type='submit']");
+            var text = btn.html();
+            Loading(true, btn, text);
             var data = $(this).serialize();
             $.ajax({
                 url: $(this).attr('Action'),
@@ -60,8 +63,10 @@
                     else {
                         swal(x.data);
                     }
+                    Loading(false, btn, text);
                 }
             });
+
             return false;
 
         })

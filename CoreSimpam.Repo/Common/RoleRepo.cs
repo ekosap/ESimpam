@@ -52,12 +52,14 @@ namespace CoreSimpam.Repo
         public async Task<Metadata<RoleViewModel>> GetAll(RoleQuery query)
         {
             Metadata<RoleViewModel> res = new Metadata<RoleViewModel>();
+            //var data = context.Roles.Include("RoleScreen");
             var dataRoles = context.Roles.Where(x => x.RoleID > 1).Select(x => new RoleViewModel()
             {
                 RoleID = x.RoleID,
                 RoleName = x.RoleName,
                 IsEnabled = x.IsEnabled,
-                StringRoleID = x.RoleID.ToString().ToBase64()
+                StringRoleID = x.RoleID.ToString().ToBase64(),
+                CountScreen = context.RoleScreen.Where(y => y.RoleID == x.RoleID).Count(p => p.RoleScreenID > 0)
             }).ToList();
             res.data.Roles = dataRoles.OrderBy(s => s.RoleName).ToList(); 
             res.status = true;

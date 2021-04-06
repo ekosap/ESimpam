@@ -35,7 +35,7 @@ namespace CoreSimpam.Repo
             string salt = userModel.Salt;
             string pass = userModel.Password;
             if (!string.Equals(pass, HashedPassword(password, salt)))
-                if (userModel == null) return new Metadata() { status = false, data = "Password Incorrect" };
+                return new Metadata() { status = false, data = "Password Incorrect" };
             return new Metadata() { status = true, data = userModel.UserID.ToString() };
         }
         private string HashedPassword(string password, string salt) => Crypter.Blowfish.Crypt(password, salt);

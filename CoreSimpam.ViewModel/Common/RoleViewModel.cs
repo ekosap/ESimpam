@@ -14,5 +14,13 @@ namespace CoreSimpam.ViewModel
         public bool IsEnabled { get; set; }
         public List<RoleViewModel> Roles { get; set; } = new List<RoleViewModel>();
         public string StringRoleID { get; set; }
+        public int CountScreen { get; set; }
+        public string ConfigAccess
+        {
+            get
+            {
+                return CountScreen == 0 ? "Not Configuration" : "Configuration";
+            }
+        }
     }
 }

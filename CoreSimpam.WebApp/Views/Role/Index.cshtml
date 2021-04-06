@@ -22,9 +22,10 @@
                     <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">RoleName</th>
-                                <th scope="col">Status</th>
+                                <th scope="col" class="col-1">#</th>
+                                <th scope="col" class="col-4">RoleName</th>
+                                <th scope="col" class="col-3">Status</th>
+                                <th scope="col" class="col-4">Access Configuration</th>
                             </tr>
                         </thead>
                     </table>
@@ -106,6 +107,13 @@
                                 if (cellData === false) {
                                     $(td).addClass('text-danger');
                                 }
+                            }
+                        },
+                        {
+                            "data": null,
+                            "searchable": true,
+                            "render": function (data) {
+                                return '<a href="/menuaccess/role/' + data.stringRoleID + '">' + data.configAccess + '</a>';
                             }
                         },
                     ]
