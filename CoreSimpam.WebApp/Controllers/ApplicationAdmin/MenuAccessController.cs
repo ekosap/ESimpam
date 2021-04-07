@@ -18,7 +18,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public IActionResult Role(string id)
         {
             ViewData["Title"] = "Configuration Role Access";
-            return View(_repo.get(Convert.ToInt64(id.FromBase64())));
+            return View(_repo.get(Convert.ToInt64(id.FromBase64())).data);
         }
     }
 }

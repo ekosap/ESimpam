@@ -26,26 +26,18 @@ namespace CoreSimpam.Repo
         {
             Metadata<RoleScreenViewModel> metadata = new Metadata<RoleScreenViewModel>();
             metadata.data.RoleID = RoleID;
-            var result = _context.Screen
-                .GroupJoin(
-                    _context.RoleScreen,
-                    s => s.ScreenID,
-                    rs => rs.ScreenID,
-                    (s, rs) => new { s, rs }
-                    )
-                .SelectMany(
-                x => x.rs.DefaultIfEmpty(),
-                (x, y) => new ScreenComponentViewModel
-                {
-                    RoleID = x.rs == null ? 0 : x.rs.First().RoleID,
-                    ScreenID = x.s.ScreenID,
-                    ScreenName = x.s.ScreenName,
-                    DeleteFlag = x.rs == null ? false : x.rs.FirstOrDefault().DeleteFlag,
-                    WriteFlag = x.rs == null ? false : x.rs.FirstOrDefault().WriteFlag,
-                    ReadFlag = x.rs == null ? false : x.rs.FirstOrDefault().ReadFlag,
-
-                })
-                .ToList();
+            var result = (from s in _context.Screen
+                          join rs in _context.RoleScreen on new { screenID = s.ScreenID, roleID = RoleID } equals new { screenID = rs.ScreenID, roleID = rs.RoleID } into screenRole
+                          from srs in screenRole.DefaultIfEmpty()
+                          select new ScreenComponentViewModel
+                          {
+                              RoleID = srs == null ? 0 : srs.RoleID,
+                              ScreenID = s.ScreenID,
+                              ScreenName = s.ScreenName,
+                              DeleteFlag = srs == null ? false : srs.DeleteFlag,
+                              WriteFlag = srs == null ? false : srs.WriteFlag,
+                              ReadFlag = srs == null ? false : srs.ReadFlag,
+                          }).ToList();
             metadata.status = true;
             metadata.data.Screens = result;
             return metadata;
