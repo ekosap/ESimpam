@@ -1,51 +1,105 @@
 ﻿@model CoreSimpam.ViewModel.RoleScreenViewModel
+@section styles{
+    <style type="text/css">
+    </style>
+}
 <div class="col-sm-12">
-    <div class="card card-default">
-        <div class="card-header">
-            <h3 class="card-title">@ViewData["Title"]</h3>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-            <div class="row">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-1">#</th>
-                                <th scope="col" class="col-4">Screen Name</th>
-                                <th scope="col" class="col-4">Description</th>
-                                <th scope="col" class="col-1">Allow Read</th>
-                                <th scope="col" class="col-1">Allow Write</th>
-                                <th scope="col" class="col-1">Allow Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Screens.Count == 0)
-                            {
+    <form asp-action="Role" asp-controller="MenuAccess" method="post">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">@ViewData["Title"]</h3>
+                <input asp-for="RoleID" type="hidden" />
+                <input asp-for="RoleName" type="hidden" />
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%;">
+                            <thead>
                                 <tr>
-                                    <td colspan="6">No Data Screen Found</td>
+                                    <th scope="col" class="col-1">#</th>
+                                    <th scope="col" class="col-5">Screen Name</th>
+                                    <th scope="col" class="col-2">
+                                        <input type="checkbox" class="checkAll" data-row="1" />
+                                        Allow Read
+                                    </th>
+                                    <th scope="col" class="col-2">
+                                        <input type="checkbox" class="checkAll" data-row="2" />
+                                        Allow Write
+                                    </th>
+                                    <th scope="col" class="col-2">
+                                        <input type="checkbox" class="checkAll" data-row="3" />
+                                        Allow Delete
+                                    </th>
                                 </tr>
-                            }
-                            else
-                            {
-                                int i = 1;
-                                foreach (var item in Model.Screens)
+                            </thead>
+                            <tbody>
+                                @if (Model.Screens.Count == 0)
                                 {
                                     <tr>
-                                        <td>@i</td>
-                                        <td>@item.ScreenName</td>
-                                        <td>@item.ScreenID</td>
-                                        <td>@item.ReadFlag</td>
-                                        <td>@item.WriteFlag</td>
-                                        <td>@item.DeleteFlag</td>
+                                        <td colspan="6">No Data Screen Found</td>
                                     </tr>
-                                    i++;
                                 }
-                            }
-                        </tbody>
-                    </table>
+                                else
+                                {
+                                    int i = 1;
+                                    foreach (var item in Model.Screens)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>
+                                                @item.ScreenName
+                                                <input asp-for="Screens[i-1].ScreenName" type="hidden" />
+                                                <input asp-for="Screens[i-1].ScreenID" type="hidden" />
+                                            </td>
+                                            <td class="text-center">
+                                                <input asp-for="Screens[i-1].ReadFlag" type="checkbox" class="checkbox" data-row="1"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <input asp-for="Screens[i-1].WriteFlag" type="checkbox" class="checkbox" data-row="2"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <input asp-for="Screens[i-1].DeleteFlag" type="checkbox" class="checkbox" data-row="3" />
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary" name="action">Save</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+@section Scripts{
+    <script type="text/javascript">
+
+        $("form").submit(function () {
+            var btn = $(this).find("button[type='submit']");
+            var text = btn.html();
+            Loading(true, btn, text);
+        });
+        $(".checkAll").click(function () {
+            let rowNumber = $(this).attr("data-row");
+            let check = this.checked;
+            $("input.checkbox[data-row='" + rowNumber + "']").prop("checked", this.checked);
+            //$("input.checkbox[data-row='" + rowNumber + "']").val(this.checked);
+
+        });
+        $("input.checkbox").click(function () {
+            let rowNumber = $(this).attr("data-row");
+            if ($("input.checkbox[data-row='" + rowNumber + "']:checked").length == $("input.checkbox[data-row='" + rowNumber + "']").length) {
+                $(".checkAll[data-row='" + rowNumber + "']").prop("checked", true);
+            }
+            else {
+                $(".checkAll[data-row='" + rowNumber + "']").prop("checked", false);
+            }
+        });
+    </script>
+}

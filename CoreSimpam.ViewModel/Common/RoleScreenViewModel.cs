@@ -9,6 +9,7 @@ namespace CoreSimpam.ViewModel
     public class RoleScreenViewModel
     {
         public long RoleID { get; set; }
+        public string RoleName { get; set; }
         public List<ScreenComponentViewModel> Screens { get; set; } = new List<ScreenComponentViewModel>();
     }
     public class ScreenComponentViewModel

@@ -1,6 +1,8 @@
-﻿using CoreSimpam.Model.Data;
+﻿using CoreSimpam.Model;
+using CoreSimpam.Model.Data;
 using CoreSimpam.ViewModel;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ namespace CoreSimpam.Repo
     public interface IRoleScreenAccessRepo
     {
         Metadata<RoleScreenViewModel> get(long RoleID);
+        Task<Metadata> update(RoleScreenViewModel model);
     }
     public class RoleScreenAccessRepo : IRoleScreenAccessRepo
     {
@@ -41,6 +44,38 @@ namespace CoreSimpam.Repo
             metadata.status = true;
             metadata.data.Screens = result;
             return metadata;
+        }
+
+        public async Task<Metadata> update(RoleScreenViewModel model)
+        {
+            Metadata res = new Metadata();
+            if (model.RoleID == 0 || model.Screens == null || model.Screens.Count == 0)
+            {
+                return new Metadata() { data = "Application not allowed" };
+            };
+            try
+            {
+                _context.RoleScreen.RemoveRange(_context.RoleScreen.Where(x => x.RoleID == model.RoleID));
+                List<RoleScreenModel> lsModel = new List<RoleScreenModel>();
+                model.Screens.ForEach(rolescreen => {
+                    lsModel.Add(new RoleScreenModel()
+                    {
+                        RoleID = model.RoleID,
+                        ScreenID = rolescreen.ScreenID,
+                        DeleteFlag = rolescreen.DeleteFlag,
+                        ReadFlag = rolescreen.ReadFlag,
+                        WriteFlag = rolescreen.WriteFlag
+                    });
+                });
+                _context.RoleScreen.AddRange(lsModel);
+                int affect = await _context.SaveChangesAsync();
+                res.status = true;
+            }
+            catch (Exception e)
+            {
+                res.data = e.Message.ToString();
+            }
+            return res;
         }
     }
 }

@@ -2,6 +2,7 @@
 using CoreSimpam.Model.Data;
 using CoreSimpam.ViewModel;
 using CoreSimpam.ViewModel.Query;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,12 @@ namespace CoreSimpam.Repo
     public class RoleRepo : IRoleRepo
     {
         private readonly SimpamDBContext context;
+        private readonly HttpContext _httpContext;
 
-        public RoleRepo(SimpamDBContext dBContext)
+        public RoleRepo(SimpamDBContext dBContext, IHttpContextAccessor HttpContextAccessor)
         {
             context = dBContext;
+            _httpContext = HttpContextAccessor.HttpContext;
         }
         public async Task<Metadata> Delete(long RoleID)
         {
@@ -53,15 +56,30 @@ namespace CoreSimpam.Repo
         {
             Metadata<RoleViewModel> res = new Metadata<RoleViewModel>();
             //var data = context.Roles.Include("RoleScreen");
-            var dataRoles = context.Roles.Where(x => x.RoleID > 1).Select(x => new RoleViewModel()
+            List<RoleViewModel> dataRoles = new List<RoleViewModel>();
+            if (_httpContext.User.Identity.Name == "root")
             {
-                RoleID = x.RoleID,
-                RoleName = x.RoleName,
-                IsEnabled = x.IsEnabled,
-                StringRoleID = x.RoleID.ToString().ToBase64(),
-                CountScreen = context.RoleScreen.Where(y => y.RoleID == x.RoleID).Count(p => p.RoleScreenID > 0)
-            }).ToList();
-            res.data.Roles = dataRoles.OrderBy(s => s.RoleName).ToList(); 
+                dataRoles = context.Roles.Select(x => new RoleViewModel()
+                {
+                    RoleID = x.RoleID,
+                    RoleName = x.RoleName,
+                    IsEnabled = x.IsEnabled,
+                    StringRoleID = x.RoleID.ToString().ToBase64(),
+                    CountScreen = context.RoleScreen.Where(y => y.RoleID == x.RoleID).Count(p => p.RoleScreenID > 0)
+                }).ToList();
+            }
+            else
+            {
+                dataRoles = context.Roles.Where(x => x.RoleID > 1).Select(x => new RoleViewModel()
+                {
+                    RoleID = x.RoleID,
+                    RoleName = x.RoleName,
+                    IsEnabled = x.IsEnabled,
+                    StringRoleID = x.RoleID.ToString().ToBase64(),
+                    CountScreen = context.RoleScreen.Where(y => y.RoleID == x.RoleID).Count(p => p.RoleScreenID > 0)
+                }).ToList();
+            }
+            res.data.Roles = dataRoles.OrderBy(s => s.RoleName).ToList();
             res.status = true;
             return await Task.FromResult(res);
         }
@@ -89,7 +107,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataRoles = await context.Roles.AnyAsync(x=> x.RoleName.Contains(model.RoleName) && x.RoleID != model.RoleID);
+                var dataRoles = await context.Roles.AnyAsync(x => x.RoleName.Contains(model.RoleName) && x.RoleID != model.RoleID);
                 if (dataRoles)
                     return new Metadata() { status = false, data = "Role name is ready" };
 
