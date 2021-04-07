@@ -31,18 +31,19 @@ namespace CoreSimpam.Repo
                     _context.RoleScreen,
                     s => s.ScreenID,
                     rs => rs.ScreenID,
-                    (s, rs) => new { s, rs = rs }
+                    (s, rs) => new { s, rs }
                     )
                 .SelectMany(
                 x => x.rs.DefaultIfEmpty(),
                 (x, y) => new ScreenComponentViewModel
                 {
+                    RoleID = x.rs == null ? 0 : x.rs.First().RoleID,
                     ScreenID = x.s.ScreenID,
                     ScreenName = x.s.ScreenName,
-                    DeleteFlag = x.rs.FirstOrDefault().DeleteFlag,
-                    WriteFlag = x.rs.FirstOrDefault().WriteFlag,
-                    ReadFlag = x.rs.FirstOrDefault().ReadFlag,
-                    
+                    DeleteFlag = x.rs == null ? false : x.rs.FirstOrDefault().DeleteFlag,
+                    WriteFlag = x.rs == null ? false : x.rs.FirstOrDefault().WriteFlag,
+                    ReadFlag = x.rs == null ? false : x.rs.FirstOrDefault().ReadFlag,
+
                 })
                 .ToList();
             metadata.status = true;

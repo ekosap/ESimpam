@@ -13,6 +13,7 @@ namespace CoreSimpam.ViewModel
     }
     public class ScreenComponentViewModel
     {
+        public long RoleID { get; set; }
         public long ScreenID { get; set; }
         public string ScreenName { get; set; }
         public bool ReadFlag { get; set; }
