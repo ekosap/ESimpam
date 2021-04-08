@@ -83,7 +83,7 @@
         $("form").submit(function () {
             var btn = $(this).find("button[type='submit']");
             var text = btn.html();
-            let url = window.location.href;
+            let url = '@Url.Action("index","role")';
             Loading(true, btn, text);
             $.ajax({
                 url: $(this).attr('Action'),
