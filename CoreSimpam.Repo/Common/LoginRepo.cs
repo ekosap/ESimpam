@@ -37,16 +37,19 @@ namespace CoreSimpam.Repo
             try
             {
                 Metadata<UserViewModel> data = await _userRepo.Validate(model.username, model.password);
-                var user = data.data;
-                var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, user.RoleName),
-                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
-                };
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principcal = new ClaimsPrincipal(identity);
-                await _httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principcal);
-                return true;
+                if (data.status)
+                {
+                    var user = data.data;
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.Role, user.RoleName),
+                        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString())
+                    };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principcal = new ClaimsPrincipal(identity);
+                    await _httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principcal);
+                }
+                return data.status;
             }
             catch (Exception e)
             {

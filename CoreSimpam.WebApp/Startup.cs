@@ -36,12 +36,13 @@ namespace CoreSimpam.WebApp
             }
             services.AddControllersWithViews();
             services.Register();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
             {
                 options.LoginPath = "/Login/Index";
                 options.Cookie.Name = "ESWP";
                 options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
             });
         }
 

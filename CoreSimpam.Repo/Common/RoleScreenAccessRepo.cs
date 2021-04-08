@@ -1,6 +1,7 @@
 ﻿using CoreSimpam.Model;
 using CoreSimpam.Model.Data;
 using CoreSimpam.ViewModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,13 +16,16 @@ namespace CoreSimpam.Repo
     {
         Metadata<RoleScreenViewModel> get(long RoleID);
         Task<Metadata> update(RoleScreenViewModel model);
+        Task<Metadata<UserMenuViewModel>> GetMenuAsync(long ParentID = 0);
     }
     public class RoleScreenAccessRepo : IRoleScreenAccessRepo
     {
+        private readonly HttpContext _httpContext;
         private readonly SimpamDBContext _context;
 
-        public RoleScreenAccessRepo(SimpamDBContext dBContext)
+        public RoleScreenAccessRepo(IHttpContextAccessor HttpContextAccessor, SimpamDBContext dBContext)
         {
+            _httpContext = HttpContextAccessor.HttpContext;
             _context = dBContext;
         }
 
@@ -46,6 +50,32 @@ namespace CoreSimpam.Repo
             return metadata;
         }
 
+        public async Task<Metadata<UserMenuViewModel>> GetMenuAsync(long ParentID = 0)
+        {
+            Metadata<UserMenuViewModel> res = new Metadata<UserMenuViewModel>();
+            res.status = _httpContext.User.Identity.IsAuthenticated;
+            if (_httpContext.User.Identity.IsAuthenticated)
+            {
+                var dataMenu = (from s in _context.Screen
+                                join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
+                                join r in _context.Roles on sr.RoleID equals r.RoleID
+                                where s.ParentID == ParentID && s.IsActive == true
+                                && s.IsMenu == true && r.RoleName.Contains(_httpContext.User.GetUserRole(), StringComparison.OrdinalIgnoreCase)
+                                select new ScreenViewModel()
+                                {
+                                    ActionName = s.ActionName,
+                                    ControllerName = s.ControllerName,
+                                    IsActive = s.IsActive,
+                                    IsMenu = s.IsMenu,
+                                    ParentID = s.ParentID,
+                                    ScreenID = s.ScreenID,
+                                    ScreenName = s.ScreenName
+                                }).ToListAsync();
+                res.data.Menu = await dataMenu;
+            }
+            return res;
+        }
+
         public async Task<Metadata> update(RoleScreenViewModel model)
         {
             Metadata res = new Metadata();
@@ -57,7 +87,8 @@ namespace CoreSimpam.Repo
             {
                 _context.RoleScreen.RemoveRange(_context.RoleScreen.Where(x => x.RoleID == model.RoleID));
                 List<RoleScreenModel> lsModel = new List<RoleScreenModel>();
-                model.Screens.ForEach(rolescreen => {
+                model.Screens.ForEach(rolescreen =>
+                {
                     lsModel.Add(new RoleScreenModel()
                     {
                         RoleID = model.RoleID,

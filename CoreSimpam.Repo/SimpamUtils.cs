@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,6 +103,13 @@ namespace CoreSimpam.Repo
         public static DataTable FromJSON(this string text)
         {
             return JsonConvert.DeserializeObject<DataTable>(text);
+        }
+    }
+    public static class PrincipalExtension
+    {
+        public static string GetUserRole(this ClaimsPrincipal principal)
+        {
+            return principal.FindFirst(ClaimTypes.Role).Value;
         }
     }
 }
