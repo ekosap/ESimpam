@@ -83,13 +83,24 @@
         $("form").submit(function () {
             var btn = $(this).find("button[type='submit']");
             var text = btn.html();
+            let url = window.location.href;
             Loading(true, btn, text);
+            $.ajax({
+                url: $(this).attr('Action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                method: 'post',
+                success: function (x) {
+                    if (x.status) window.location.href = url;
+                    else swal(x.data);
+                    Loading(false, btn, text);
+                }
+            });
+            return false;
         });
         $(".checkAll").click(function () {
             let rowNumber = $(this).attr("data-row");
-            let check = this.checked;
             $("input.checkbox[data-row='" + rowNumber + "']").prop("checked", this.checked);
-            //$("input.checkbox[data-row='" + rowNumber + "']").val(this.checked);
 
         });
         $("input.checkbox").click(function () {

@@ -62,14 +62,9 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var res = await _repo.update(model);
-                return RedirectToAction("index", "role");
+                return Json(res);
             }
             return View(model);
-        }
-        public IActionResult changevalue(int type, bool value)
-        {
-            var data = RoleScreenViewModel;
-            return Json(new { value, type, data });
         }
     }
 }
