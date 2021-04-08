@@ -66,7 +66,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         {
             ViewData["Title"] = "Add Application User";
             UserViewModel model = new UserViewModel();
-            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Where(x => x.IsEnabled == true).Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
             return await Task.FromResult(PartialView("_Add", model));
         }
         [HttpPost]
@@ -74,7 +74,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Add(UserViewModel model)
         {
             ViewData["Title"] = "Add Application User";
-            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Where(x => x.IsEnabled == true).Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
             if (ModelState.IsValid)
             {
                 var user = await _repo.Insert(model);
@@ -86,7 +86,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         {
             ViewData["Title"] = "Edit Application User";
             UserViewModel model = (await _repo.GetByID(id)).data;
-            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Where(x => x.IsEnabled == true).Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
             return PartialView("_Edit", model);
         }
         [HttpPost]
@@ -94,7 +94,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Edit(UserViewModel model)
         {
             ViewData["Title"] = "Edit Application User";
-            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
+            ViewData["roles"] = _repoRole.GetAll(new RoleQuery()).Result.data.Roles.Where(x => x.IsEnabled == true).Select(x => new SelectListItem() { Value = x.RoleID.ToString(), Text = x.RoleName }).ToList();
             ModelState.SkipToValid("Password,Username");
             if (ModelState.IsValid)
             {
