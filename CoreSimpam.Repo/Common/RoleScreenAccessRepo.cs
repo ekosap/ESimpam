@@ -16,7 +16,7 @@ namespace CoreSimpam.Repo
     {
         Metadata<RoleScreenViewModel> get(long RoleID);
         Task<Metadata> update(RoleScreenViewModel model);
-        Task<Metadata<UserMenuViewModel>> GetMenuAsync(long ParentID = 0);
+        Task<Metadata<UserMenuViewModel>> GetMenuAsync();
     }
     public class RoleScreenAccessRepo : IRoleScreenAccessRepo
     {
@@ -50,7 +50,7 @@ namespace CoreSimpam.Repo
             return metadata;
         }
 
-        public async Task<Metadata<UserMenuViewModel>> GetMenuAsync(long ParentID = 0)
+        public async Task<Metadata<UserMenuViewModel>> GetMenuAsync()
         {
             Metadata<UserMenuViewModel> res = new Metadata<UserMenuViewModel>();
             res.status = _httpContext.User.Identity.IsAuthenticated;
@@ -59,8 +59,8 @@ namespace CoreSimpam.Repo
                 var dataMenu = (from s in _context.Screen
                                 join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
                                 join r in _context.Roles on sr.RoleID equals r.RoleID
-                                where s.ParentID == ParentID && s.IsActive == true
-                                && s.IsMenu == true && r.RoleName.Contains(_httpContext.User.GetUserRole(), StringComparison.OrdinalIgnoreCase)
+                                where s.IsActive == true && s.IsMenu == true 
+                                && r.RoleName == _httpContext.User.GetUserRole()
                                 select new ScreenViewModel()
                                 {
                                     ActionName = s.ActionName,
@@ -72,6 +72,7 @@ namespace CoreSimpam.Repo
                                     ScreenName = s.ScreenName
                                 }).ToListAsync();
                 res.data.Menu = await dataMenu;
+                res.data.CountChild = res.data.Menu.Count;
             }
             return res;
         }

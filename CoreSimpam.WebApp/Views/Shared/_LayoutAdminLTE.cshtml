@@ -21,7 +21,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         @await Html.PartialAsync("AdminLTEComponents/Navbar")
-        @await Html.PartialAsync("AdminLTEComponents/Sidebar")
+        @await Component.InvokeAsync("UserMenu")
+        @*@await Html.PartialAsync("AdminLTEComponents/Sidebar")*@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->
