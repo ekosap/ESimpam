@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
-    [Authorize]
+    [AuthorizeWebAttributes]
     public class UserController : Controller
     {
         private readonly IUserRepo _repo;
@@ -103,6 +103,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
+        [AuthorizeWebAttributes(AccessLevel = 2)]
         public async Task<IActionResult> Delete(long id)
         {
             var model = await _repo.Delete(id);

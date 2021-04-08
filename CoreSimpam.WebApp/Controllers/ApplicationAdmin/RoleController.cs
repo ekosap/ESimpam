@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
-    [Authorize]
+    [AuthorizeWebAttributes]
     public class RoleController : Controller
     {
         private RoleViewModel Roles
@@ -111,6 +111,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
+        [AuthorizeWebAttributes(AccessLevel = 2)]
         public async Task<IActionResult> Delete(string id)
         {
             if (!long.TryParse(id.FromBase64(), out long RoleID)) return Json(new Metadata() { status = false, data = "RoleID not allow" });

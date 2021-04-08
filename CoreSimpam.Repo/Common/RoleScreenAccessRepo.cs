@@ -16,6 +16,7 @@ namespace CoreSimpam.Repo
     {
         Metadata<RoleScreenViewModel> get(long RoleID);
         Task<Metadata> update(RoleScreenViewModel model);
+        Metadata AllowPermission(string Controller, string Action, string Method, int Accesslevel = 0);
         Task<Metadata<UserMenuViewModel>> GetMenuAsync();
     }
     public class RoleScreenAccessRepo : IRoleScreenAccessRepo
@@ -27,6 +28,51 @@ namespace CoreSimpam.Repo
         {
             _httpContext = HttpContextAccessor.HttpContext;
             _context = dBContext;
+        }
+
+        public Metadata AllowPermission(string Controller, string Action, string Method, int Accesslevel = 0)
+        {
+            Metadata res = new Metadata();
+            if (Accesslevel == 0)
+                switch (Method)
+                {
+                    case "GET":
+                        Accesslevel = 0;
+                        break;
+                    case "POST":
+                    case "PUT":
+                        Accesslevel = 1;
+                        break;
+                    case "DELETE":
+                        Accesslevel = 2;
+                        break;
+                }
+            try
+            {
+                ScreenViewModel dataMenu = (from s in _context.Screen
+                            join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
+                            join r in _context.Roles on sr.RoleID equals r.RoleID
+                            where s.ControllerName == Controller && s.ActionName == Action
+                            && r.RoleName == _httpContext.User.GetUserRole() && ((Accesslevel == 0
+                            && sr.ReadFlag == true) || (Accesslevel == 1 && sr.WriteFlag == true)
+                            || (Accesslevel == 2 && sr.DeleteFlag == true))
+                            select new ScreenViewModel()
+                            {
+                                ActionName = s.ActionName,
+                                ControllerName = s.ControllerName,
+                                IsActive = s.IsActive,
+                                IsMenu = s.IsMenu,
+                                ParentID = s.ParentID,
+                                ScreenID = s.ScreenID,
+                                ScreenName = s.ScreenName
+                            }).FirstOrDefault();
+                res.status = dataMenu != null;
+            }
+            catch (Exception e)
+            {
+                res.data = e.Message.ToString();
+            }
+            return res;
         }
 
         public Metadata<RoleScreenViewModel> get(long RoleID)
@@ -59,7 +105,7 @@ namespace CoreSimpam.Repo
                 var dataMenu = (from s in _context.Screen
                                 join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
                                 join r in _context.Roles on sr.RoleID equals r.RoleID
-                                where s.IsActive == true && s.IsMenu == true 
+                                where s.IsActive == true && s.IsMenu == true
                                 && r.RoleName == _httpContext.User.GetUserRole()
                                 select new ScreenViewModel()
                                 {

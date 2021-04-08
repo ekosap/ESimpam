@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
 {
-    [Authorize]
+    [AuthorizeWebAttributes]
     public class ScreenController : Controller
     {
         private ScreenViewModel Screen
@@ -142,6 +142,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
+        [AuthorizeWebAttributes(AccessLevel = 2)]
         public async Task<IActionResult> Delete(long id)
         {
             var res = await _repo.Delete(id);
