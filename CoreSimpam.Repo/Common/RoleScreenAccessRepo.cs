@@ -100,7 +100,10 @@ namespace CoreSimpam.Repo
                                     IsMenu = s.IsMenu,
                                     ParentID = s.ParentID,
                                     ScreenID = s.ScreenID,
-                                    ScreenName = s.ScreenName
+                                    ScreenName = s.ScreenName,
+                                    AllowDelete = sr.DeleteFlag,
+                                    AllowRead = sr.ReadFlag,
+                                    AllowWrite = sr.WriteFlag
                                 }).ToListAsync();
                 res.data.Menu = await dataMenu;
                 res.data.CountChild = res.data.Menu.Count;
