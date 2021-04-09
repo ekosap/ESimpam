@@ -38,8 +38,8 @@ namespace CoreSimpam.Repo
                 ScreenViewModel dataMenu = (from s in _context.Screen
                             join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
                             join r in _context.Roles on sr.RoleID equals r.RoleID
-                            where s.ControllerName == Controller /*&& s.ActionName == Action*/
-                            && r.RoleName == _httpContext.User.GetUserRole() && ((Accesslevel == AccessLevel.AllowRead && sr.ReadFlag == true) || (Accesslevel == AccessLevel.AllowWrite && sr.WriteFlag == true)
+                            where s.ControllerName.ToLower().Replace(" ","") == Controller.ToLower().Replace(" ", "") /*&& s.ActionName == Action*/
+                            && r.RoleName.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "") && ((Accesslevel == AccessLevel.AllowRead && sr.ReadFlag == true) || (Accesslevel == AccessLevel.AllowWrite && sr.WriteFlag == true)
                             || (Accesslevel == AccessLevel.AllowDelete && sr.DeleteFlag == true))
                             select new ScreenViewModel()
                             {
@@ -91,7 +91,7 @@ namespace CoreSimpam.Repo
                                 join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
                                 join r in _context.Roles on sr.RoleID equals r.RoleID
                                 where s.IsActive == true && s.IsMenu == true
-                                && r.RoleName == _httpContext.User.GetUserRole()
+                                && r.RoleName.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "")
                                 select new ScreenViewModel()
                                 {
                                     ActionName = s.ActionName,

@@ -108,7 +108,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataRoles = await context.Roles.AnyAsync(x => x.RoleName.Contains(model.RoleName) && x.RoleID != model.RoleID);
+                var dataRoles = await context.Roles.AnyAsync(x => x.RoleName.ToLower().Replace(" ", "") == model.RoleName.ToLower().Replace(" ", "") && x.RoleID != model.RoleID);
                 if (dataRoles)
                     return new Metadata() { status = false, data = "Role name is ready" };
 
@@ -135,7 +135,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Roles.AnyAsync(x => x.RoleName.Contains(model.RoleName) && x.RoleID != model.RoleID);
+                var data = await context.Roles.AnyAsync(x => x.RoleName.ToLower().Replace(" ", "") == model.RoleName.ToLower().Replace(" ", "") && x.RoleID != model.RoleID);
                 if (data)
                     return new Metadata() { status = false, data = "Role name is ready" };
 

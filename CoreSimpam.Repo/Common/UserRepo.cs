@@ -39,7 +39,7 @@ namespace CoreSimpam.Repo
             return new Metadata() { status = true, data = userModel.UserID.ToString() };
         }
         private string HashedPassword(string password, string salt) => Crypter.Blowfish.Crypt(password, salt);
-        private async Task<UserModel> GetUserAsync(string username) => await context.Users.Where(x => x.UserName == username).FirstOrDefaultAsync();
+        private async Task<UserModel> GetUserAsync(string username) => await context.Users.Where(x => x.UserName.ToLower().Replace(" ", "") == username.ToLower().Replace(" ", "")).FirstOrDefaultAsync();
         private string GenerateSalt(int number = 10) => Crypter.Blowfish.GenerateSalt(number);
 
         public async Task<Metadata<UserViewModel>> GetAll()
@@ -86,7 +86,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataUSer = await context.Users.AnyAsync(x => x.UserName.Contains(model.UserName) && x.UserID != model.UserID);
+                var dataUSer = await context.Users.AnyAsync(x => x.UserName.ToLower().Replace(" ", "") == model.UserName.ToLower().Replace(" ", "") && x.UserID != model.UserID);
                 if (dataUSer)
                     return new Metadata() { status = false, data = "User name is ready" };
                 string saltNow = GenerateSalt();
@@ -116,7 +116,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Users.AnyAsync(x => x.UserName.Contains(model.UserName) && x.UserID != model.UserID);
+                var data = await context.Users.AnyAsync(x => x.UserName.ToLower().Replace(" ", "")== model.UserName.ToLower().Replace(" ", "") && x.UserID != model.UserID);
                 if (data)
                     return new Metadata() { status = false, data = "User name is ready" };
                 var dataUSer = await context.Users.Where(x => x.UserID == model.UserID).FirstOrDefaultAsync();

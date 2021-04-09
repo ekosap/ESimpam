@@ -104,7 +104,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Screen.AnyAsync(x => x.ScreenName.Contains(model.ScreenName) && x.ScreenID != model.ScreenID);
+                var data = await context.Screen.AnyAsync(x => x.ScreenName.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.ScreenID != model.ScreenID);
                 if (data)
                     return new Metadata() { status = false, data = "Screen name is ready" };
                 await context.Screen.AddAsync(new ScreenModel()
@@ -135,7 +135,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataScreen = await context.Screen.AnyAsync(x => x.ScreenName.Contains(model.ScreenName) && x.ScreenID != model.ScreenID);
+                var dataScreen = await context.Screen.AnyAsync(x => x.ScreenName.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.ScreenID != model.ScreenID);
                 if (dataScreen)
                     return new Metadata() { status = false, data = "Screen name is ready" };
                 var data = await context.Screen.Where(x => x.ScreenID == model.ScreenID).FirstOrDefaultAsync();
