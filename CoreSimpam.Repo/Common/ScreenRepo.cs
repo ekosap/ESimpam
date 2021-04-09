@@ -35,6 +35,7 @@ namespace CoreSimpam.Repo
                 if (data == null)
                     return new Metadata() { status = false, data = "Screen application not found" };
 
+                context.RoleScreen.RemoveRange(context.RoleScreen.Where(x => x.ScreenID == ScreenID));
                 context.Screen.Remove(data);
 
                 await context.SaveChangesAsync();

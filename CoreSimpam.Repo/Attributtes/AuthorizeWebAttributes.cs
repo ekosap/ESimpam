@@ -26,11 +26,14 @@ namespace CoreSimpam.Repo
                 var controller = context.RouteData.Values["controller"].ToString();
                 var action = context.RouteData.Values["action"].ToString();
                 var result = services.AllowPermission(controller, action, AccessLevel);
-                if (result.status)
-                    return;
+                if (!result.status)
+                {
+                    bool xml = context.HttpContext.Request.Headers.ContainsKey("X-Requested-With");
+                    context.Result = xml ? new UnauthorizedObjectResult(new Metadata() { status = false, data = "Unauthorized (401)" }) : new RedirectToActionResult("UnAuth", "Home", null);
+                }
+                return;
             }
-            bool xml = context.HttpContext.Request.Headers.ContainsKey("X-Requested-With"); 
-            context.Result = xml ? new UnauthorizedObjectResult(new Metadata() { status = false, data = "Unauthorized (401)" }) : new RedirectToActionResult("UnAuth", "Home", null);
+            context.Result = new RedirectToActionResult("index", "login", null);
         }
     }
 }

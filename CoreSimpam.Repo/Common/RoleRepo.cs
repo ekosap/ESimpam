@@ -39,6 +39,7 @@ namespace CoreSimpam.Repo
                 if (dataRoles == null)
                     return new Metadata() { status = false, data = "Data not found" };
 
+                context.RoleScreen.RemoveRange(context.RoleScreen.Where(x => x.RoleID == RoleID));
                 context.Remove(dataRoles);
                 await context.SaveChangesAsync();
                 res.status = true;

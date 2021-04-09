@@ -96,6 +96,7 @@
                     Loading(false, btn, text);
                 },
                 error: function (e) {
+                    //console.log(e);
                     swal(JSON.parse(e.responseText).data);
                     Loading(false, btn, text);
                 }

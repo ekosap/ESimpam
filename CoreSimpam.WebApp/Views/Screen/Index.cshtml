@@ -74,7 +74,7 @@
         });
 
         function bindDatatable() {
-            $.fn.dataTable.ext.errMode = 'none';
+            //$.fn.dataTable.ext.errMode = 'none';
             datatable = $('#tbList')
                 .on('error.dt', function (e, settings, techNote, message) {
                     swal(settings.jqXHR.responseJSON.data);
