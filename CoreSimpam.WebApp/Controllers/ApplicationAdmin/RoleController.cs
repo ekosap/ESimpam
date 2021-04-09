@@ -73,6 +73,8 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             });
 
         }
+
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
         public async Task<IActionResult> Add()
         {
             ViewData["Title"] = "Add Application Role";
@@ -91,6 +93,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Add", model);
         }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["Title"] = "Edit Application Role";
@@ -111,7 +114,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
-        [AuthorizeWebAttributes(AccessLevel = 2)]
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowDelete)]
         public async Task<IActionResult> Delete(string id)
         {
             if (!long.TryParse(id.FromBase64(), out long RoleID)) return Json(new Metadata() { status = false, data = "RoleID not allow" });

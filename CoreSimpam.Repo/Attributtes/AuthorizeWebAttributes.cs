@@ -14,7 +14,7 @@ namespace CoreSimpam.Repo
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeWebAttributes : Attribute, IAuthorizationFilter
     {
-        public int AccessLevel { get; set; }
+        public AccessLevel AccessLevel { get; set; }
         /// <summary>  
         /// This will Authorize User  
         /// </summary> 
@@ -25,12 +25,12 @@ namespace CoreSimpam.Repo
                 IRoleScreenAccessRepo services = (IRoleScreenAccessRepo)context.HttpContext.RequestServices.GetService(typeof(IRoleScreenAccessRepo));
                 var controller = context.RouteData.Values["controller"].ToString();
                 var action = context.RouteData.Values["action"].ToString();
-                var reqMethode = context.HttpContext.Request.Method;
-                var result = services.AllowPermission(controller, action, reqMethode, AccessLevel);
+                var result = services.AllowPermission(controller, action, AccessLevel);
                 if (result.status)
                     return;
             }
-            context.Result = new OkObjectResult(new Metadata() { status = false, data = "Your Access Limited" });
+            bool xml = context.HttpContext.Request.Headers.ContainsKey("X-Requested-With"); 
+            context.Result = xml ? new UnauthorizedObjectResult(new Metadata() { status = false, data = "Unauthorized (401)" }) : new RedirectToActionResult("UnAuth", "Home", null);
         }
     }
 }

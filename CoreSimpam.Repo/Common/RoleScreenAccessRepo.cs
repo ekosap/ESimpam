@@ -16,7 +16,7 @@ namespace CoreSimpam.Repo
     {
         Metadata<RoleScreenViewModel> get(long RoleID);
         Task<Metadata> update(RoleScreenViewModel model);
-        Metadata AllowPermission(string Controller, string Action, string Method, int Accesslevel = 0);
+        Metadata AllowPermission(string Controller, string Action, AccessLevel Accesslevel = AccessLevel.AllowRead);
         Task<Metadata<UserMenuViewModel>> GetMenuAsync();
     }
     public class RoleScreenAccessRepo : IRoleScreenAccessRepo
@@ -30,32 +30,17 @@ namespace CoreSimpam.Repo
             _context = dBContext;
         }
 
-        public Metadata AllowPermission(string Controller, string Action, string Method, int Accesslevel = 0)
+        public Metadata AllowPermission(string Controller, string Action, AccessLevel Accesslevel = AccessLevel.AllowRead)
         {
             Metadata res = new Metadata();
-            if (Accesslevel == 0)
-                switch (Method)
-                {
-                    case "GET":
-                        Accesslevel = 0;
-                        break;
-                    case "POST":
-                    case "PUT":
-                        Accesslevel = 1;
-                        break;
-                    case "DELETE":
-                        Accesslevel = 2;
-                        break;
-                }
             try
             {
                 ScreenViewModel dataMenu = (from s in _context.Screen
                             join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
                             join r in _context.Roles on sr.RoleID equals r.RoleID
-                            where s.ControllerName == Controller && s.ActionName == Action
-                            && r.RoleName == _httpContext.User.GetUserRole() && ((Accesslevel == 0
-                            && sr.ReadFlag == true) || (Accesslevel == 1 && sr.WriteFlag == true)
-                            || (Accesslevel == 2 && sr.DeleteFlag == true))
+                            where s.ControllerName == Controller /*&& s.ActionName == Action*/
+                            && r.RoleName == _httpContext.User.GetUserRole() && ((Accesslevel == AccessLevel.AllowRead && sr.ReadFlag == true) || (Accesslevel == AccessLevel.AllowWrite && sr.WriteFlag == true)
+                            || (Accesslevel == AccessLevel.AllowDelete && sr.DeleteFlag == true))
                             select new ScreenViewModel()
                             {
                                 ActionName = s.ActionName,

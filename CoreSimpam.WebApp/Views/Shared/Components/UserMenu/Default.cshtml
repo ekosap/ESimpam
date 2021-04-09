@@ -22,7 +22,7 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                @foreach (var menuuser in Model.Menu.Where(x => x.ParentID == 0))
+                @foreach (var menuuser in Model.Menu.Where(x => x.ParentID == 0).OrderBy(x => x.ScreenName))
                 {
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
@@ -33,7 +33,7 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @foreach (var childMenu in Model.Menu.Where(x => x.ParentID == menuuser.ScreenID))
+                            @foreach (var childMenu in Model.Menu.Where(x => x.ParentID == menuuser.ScreenID).OrderBy(x => x.ScreenName))
                             {
                                 <li class="nav-item">
                                     <a asp-action="@childMenu.ActionName" asp-controller="@childMenu.ControllerName" class="nav-link">

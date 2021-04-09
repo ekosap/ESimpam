@@ -62,12 +62,20 @@
                     $('#modal-input').find('.modal-content').html(dd);
                     $('#modal-input').modal('show');
                     Loading(false, $("#btnAdd"), "Add");
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                    Loading(false, $("#btnAdd"), "Add");
                 }
             });
         });
 
         function bindDatatable() {
+            $.fn.dataTable.ext.errMode = 'none';
             datatable = $('#tbList')
+                .on('error.dt', function (e, settings, techNote, message) {
+                    swal(settings.jqXHR.responseJSON.data);
+                })
                 .DataTable({
                     "sAjaxSource": '@Url.Action("GetData")',
                     "destroy": true,
@@ -129,9 +137,13 @@
                         else
                             alert(x.data);
                     }
+                    Loading(false, btn, text);
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                    Loading(false, btn, text);
                 }
             });
-            Loading(false, btn, text);
             return false;
         });
         $("#modal-input").on("click", "#btn-delete", function () {
@@ -164,12 +176,17 @@
                                 swal(x.data);
                             }
                             bindDatatable();
+                            Loading(false, $(this), text);
+                            },
+                            error: function (e) {
+                                swal(JSON.parse(e.responseText).data);
+                                Loading(false, $(this), text);
                             }
                         });
                         $("#modal-input").modal('hide');
                     }
+                    Loading(false, $(this), text);
                 });
-            Loading(false, $(this), text);
             return false;
         });
         $('#tbList').on("click", "#btnLink", function () {
@@ -182,6 +199,9 @@
                     $("#modal-input").find(".modal-dialog").addClass("modal-md");
                     $('#modal-input').find('.modal-content').html(dd);
                     $('#modal-input').modal('show');
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
                 }
             });
             return false;

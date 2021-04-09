@@ -94,6 +94,10 @@
                     if (x.status) window.location.href = url;
                     else swal(x.data);
                     Loading(false, btn, text);
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                    Loading(false, btn, text);
                 }
             });
             return false;

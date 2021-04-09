@@ -62,6 +62,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             });
 
         }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
         public async Task<IActionResult> Add()
         {
             ViewData["Title"] = "Add Application User";
@@ -82,6 +83,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Add", model);
         }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
         public async Task<IActionResult> Edit(long id)
         {
             ViewData["Title"] = "Edit Application User";
@@ -103,7 +105,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             }
             return PartialView("_Edit", model);
         }
-        [AuthorizeWebAttributes(AccessLevel = 2)]
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowDelete)]
         public async Task<IActionResult> Delete(long id)
         {
             var model = await _repo.Delete(id);

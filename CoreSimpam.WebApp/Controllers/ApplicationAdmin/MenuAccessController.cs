@@ -28,6 +28,7 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
         public async Task<IActionResult> RoleAsync(RoleScreenViewModel model)
         {
             ViewData["Title"] = $"{model.RoleName} Configuration Role Access";

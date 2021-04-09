@@ -93,7 +93,7 @@ namespace CoreSimpam.Repo
                 case "f":
                     return false;
                 default:
-                    throw new InvalidCastException("You can't cast that value to a bool!");
+                    return false;
             }
         }
         public static string ToJSON<T>(this T text)
