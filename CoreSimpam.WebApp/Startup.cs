@@ -38,12 +38,12 @@ namespace CoreSimpam.WebApp
             services.Register();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
-            {
-                options.LoginPath = "/Login/Index";
-                options.Cookie.Name = "ESWP";
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromDays(1);
-            });
+                            {
+                                options.LoginPath = "/Login/Index";
+                                options.Cookie.Name = "ESWP";
+                                options.SlidingExpiration = true;
+                                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
