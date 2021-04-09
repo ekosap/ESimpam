@@ -21,6 +21,7 @@ namespace CoreSimpam.Repo
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IScreenRepo, ScreenRepo>();
             services.AddTransient<IRoleScreenAccessRepo, RoleScreenAccessRepo>();
+            services.AddTransient<IResidentRepo, ResidentRepo>();
             return services;
         }
     }
