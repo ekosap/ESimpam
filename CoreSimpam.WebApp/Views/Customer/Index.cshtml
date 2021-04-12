@@ -1,0 +1,223 @@
+﻿@section styles{
+    <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .table tr td {
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<div class="col-sm-12">
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">@ViewData["Title"]</h3>
+            <div class="card-tools">
+                <button class="btn btn-tool btn-outline-primary" id="btnAdd">Add</button>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-1">#</th>
+                                <th scope="col" class="col-2">Customer Number</th>
+                                <th scope="col" class="col-3">Customer Name</th>
+                                <th scope="col" class="col-2">Customer Address</th>
+                                <th scope="col" class="col-2">Phone</th>
+                                <th scope="col" class="col-2">Resident</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-input" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            bindDatatable();
+        });
+
+        $('#btnAdd').click(function () {
+            Loading(true, $("#btnAdd"), "Add");
+            $.ajax({
+                url: '@Url.Action("Add")',
+                type: 'get',
+                dataType: 'html',
+                success: function (dd) {
+                    $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                    $('#modal-input').find('.modal-content').html(dd);
+                    $('#modal-input').modal('show');
+                    Loading(false, $("#btnAdd"), "Add");
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                    Loading(false, $("#btnAdd"), "Add");
+                }
+            });
+        });
+
+        function bindDatatable() {
+            datatable = $('#tbList')
+                .on('error.dt', function (e, settings, techNote, message) {
+                    swal(settings.jqXHR.responseJSON.data);
+                })
+                .DataTable({
+                    "sAjaxSource": '@Url.Action("GetData")',
+                    "destroy": true,
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bSearchable": true,
+                    "order": [[1, 'asc']],
+                    "responsive": true,
+                    "language": {
+                        "emptyTable": "No record found.",
+                        "processing":
+                            '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading... '
+                    },
+                    "columnDefs": [{ orderable: false, targets: [0]}],
+                    "columns": [
+                        {
+                            "data": null,
+                            "searchable": false,
+                            "render": function (data, type, row, meta) {
+                                return meta.row + 1;
+                            }
+                        },
+                        {
+                            "data": null,
+                            "searchable": true,
+                            "render": function (data) {
+                                return '<a value="' + data.customerID + '" id="btnLink" href="">' + data.customerNumber + '</a>';
+                            }
+                        },
+                        {
+                            "data": "customerName",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "customerAddress",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "phone",
+                            "searchable": true,
+                        },
+                        {
+                            "data": "resident.residentName",
+                            "searchable": true,
+                        },
+                    ]
+                });
+        }
+
+        $('#modal-input').on('submit', '#input-form', function () {
+            var btn = $(this).find("button[type='submit']");
+            var text = btn.html();
+            Loading(true, btn, text);
+            $.ajax({
+                url: $(this).attr('Action'),
+                data: $(this).serialize(),
+                dataType: 'json',
+                method: 'post',
+                success: function (x) {
+                    if (x.status == true) {
+                        $('#modal-input').modal('hide');
+                        bindDatatable();
+                    }
+                    else {
+                        if (x.data == null || x.data == undefined)
+                            $("#modal-input").find(".modal-body").html(x);
+                        else
+                            alert(x.data);
+                    }
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                }
+            });
+            Loading(false, btn, text);
+            return false;
+        });
+
+        $('#tbList').on("click", "#btnLink", function () {
+            $.ajax({
+                url: '@Url.Action("Edit")',
+                type: 'get',
+                data: { id: $(this).attr('value') },
+                dataType: 'html',
+                success: function (dd) {
+                    if (dd.status === null || dd.status === undefined) {
+                        $("#modal-input").find(".modal-dialog").addClass("modal-md");
+                        $('#modal-input').find('.modal-content').html(dd);
+                        $('#modal-input').modal('show');
+                    }
+                    else {
+                        swal(dd.data);
+                    }
+                },
+                error: function (e) {
+                    swal(JSON.parse(e.responseText).data);
+                }
+            });
+            return false;
+        });
+
+        $("#modal-input").on("click", "#btn-delete", function () {
+            var text = $(this).html();
+            var id = $(this).attr('value')
+            Loading(true, $(this), text);
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                        url: '@Url.Action("Delete")',
+                        dataType: 'json',
+                        type: 'post',
+                        data: { id: id },
+                        success: function (x) {
+                            if (x.status == true) {
+                                swal(
+                                    'Deleted!',
+                                    x.data || 'Data Deleted',
+                                    'success'
+                                );
+                            }
+                            else {
+                                swal(x.data);
+                            }
+                            bindDatatable();
+                            },
+                            error: function (e) {
+                                swal(JSON.parse(e.responseText).data);
+                            }
+                        });
+                        $("#modal-input").modal('hide');
+                    }
+                    Loading(false, $(this), text);
+                });
+            return false;
+        });
+    </script>
+}

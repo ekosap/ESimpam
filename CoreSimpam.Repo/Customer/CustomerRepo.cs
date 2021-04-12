@@ -38,7 +38,7 @@ namespace CoreSimpam.Repo
                 context.Customer.Remove(Customer);
 
                 await context.SaveChangesAsync();
-                res.status = true;
+                res.status = true; res.data = "Data Deleted";
             }
             catch (Exception e)
             {
@@ -106,13 +106,13 @@ namespace CoreSimpam.Repo
                 var customer = (from r in context.Customer where r.CustomerName.ToLower().Replace(" ", "") == model.CustomerName.ToLower().Replace(" ", "") && r.CustomerID != model.CustomerID select r).FirstOrDefault();
 
                 if (customer != null) { return new Metadata() { data = "Customer name is ready", status = false }; }
-
-                var lastNumber = (from c in context.Customer where c.CustomerNumber.Contains($"CUS{DateTime.Now.Year}{DateTime.Now.Month}") select c.CustomerNumber).LastOrDefault();
+                string NumbVal = $"CUS{DateTime.Now.ToString("yyyyMM")}";
+                var lastNumber = (from c in context.Customer where c.CustomerNumber.Contains(NumbVal) select c).OrderBy(x=> x.CustomerID).LastOrDefault()?.CustomerNumber;
 
                 if (lastNumber == null)
-                    model.CustomerNumber = $"CUS{DateTime.Now.Year}{DateTime.Now.Month}00001";
+                    model.CustomerNumber = $"{NumbVal}00001";
                 else
-                    model.CustomerNumber = $"CUS{DateTime.Now.Year}{DateTime.Now.Month}{Convert.ToInt32(lastNumber.Remove(0, 9)) + 1}";
+                    model.CustomerNumber = $"{NumbVal}{(Convert.ToInt32(lastNumber.Remove(0, 9)) + 1).ToString("00000")}";
 
                 context.Customer.Add(new CustomerModel()
                 {
