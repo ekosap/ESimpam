@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.WebApp.Controllers.Customer
 {
+    [AuthorizeWebAttributes]
     public class ResidentController : Controller
     {
         private readonly IResidentRepo repo;
@@ -56,6 +57,49 @@ namespace CoreSimpam.WebApp.Controllers.Customer
                 Data = displayResult
             });
 
+        }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
+        public IActionResult Add()
+        {
+            ViewData["Title"] = "Add Resident Customer";
+            return PartialView("_Add", new ResidentViewModel());
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddAsync(ResidentViewModel model)
+        {
+            ViewData["Title"] = "Add Resident Customer";
+            if (ModelState.IsValid)
+            {
+                var result = await repo.Insert(model);
+                return Json(result);
+            }
+            return PartialView("_Add", model);
+        }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowWrite)]
+        public IActionResult Edit(int id)
+        {
+            ViewData["Title"] = "Edit Resident Customer";
+            var result = repo.GetByID(id).data;
+            return PartialView("_Edit", result);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAsync(ResidentViewModel model)
+        {
+            ViewData["Title"] = "Edit Resident Customer";
+            if (ModelState.IsValid)
+            {
+                var result = await repo.Update(model);
+                return Json(result);
+            }
+            return PartialView("_Edit", model);
+        }
+        [AuthorizeWebAttributes(AccessLevel = AccessLevel.AllowDelete)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var model = await repo.Delete(id);
+            return Json(model);
         }
     }
 }

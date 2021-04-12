@@ -39,6 +39,7 @@ namespace CoreSimpam.Repo
 
                 await context.SaveChangesAsync();
                 res.status = true;
+                res.data = "Data Deleted";
             }
             catch (Exception e)
             {
@@ -88,13 +89,13 @@ namespace CoreSimpam.Repo
                 var resident = (from r in context.Resident where r.ResidentName.ToLower().Replace(" ", "") == model.ResidentName.ToLower().Replace(" ", "") && r.ResidentID != model.ResidentID select r).FirstOrDefault();
 
                 if(resident != null) { return new Metadata() { data = "Resident name is ready", status = false }; }
-
-                var lastNumber = (from r in context.Resident where r.ResidentNumber.Contains($"{DateTime.Now.Year}{DateTime.Now.Month}") select r.ResidentNumber).LastOrDefault();
+                string NumberVal = "RC"+DateTime.Now.ToString("yyyyMM");
+                var lastNumber = (from r in context.Resident where r.ResidentNumber.Contains(NumberVal) select r).OrderBy(x=>x.ResidentID).LastOrDefault()?.ResidentNumber;
 
                 if (lastNumber == null) 
-                    model.ResidentNumber = $"{DateTime.Now.Year}{DateTime.Now.Month}00001";
+                    model.ResidentNumber = $"{NumberVal}001";
                 else 
-                    model.ResidentNumber = $"{DateTime.Now.Year}{DateTime.Now.Month}{Convert.ToInt32(lastNumber.Remove(0,6)) + 1}";
+                    model.ResidentNumber = $"{NumberVal}{(Convert.ToInt32(lastNumber.Remove(0,8)) + 1).ToString("000")}";
 
                 context.Resident.Add(new ResidentModel()
                 {
