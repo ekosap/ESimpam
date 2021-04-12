@@ -70,3 +70,24 @@ CREATE TABLE "Common"."RoleScreen"(
 	"DeleteFlag" boolean NOT NULL,
 	CONSTRAINT "PK_RoleScreen" PRIMARY KEY ("RoleScreenID")
 );
+
+
+CREATE TABLE "Customer"."Resident"(
+	"ResidentID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"ResidentName" varchar(1000) NOT NULL,
+	"ResidentNumber" varchar(1000) NOT NULL,
+	"IsActive" boolean NOT null,
+	CONSTRAINT "PK_Resident" PRIMARY KEY ("ResidentID")
+);
+
+
+CREATE TABLE "Customer"."Customer"(
+	"CustomerID" int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
+	"CustomerName" varchar(1000) NOT NULL,
+	"CustomerNumber" varchar(1000) NOT NULL,
+	"CustomerAddress" varchar(1000) NOT NULL,
+	"Phone" varchar(1000) NOT NULL,
+	"ResidentID" int8 NOT null,
+	CONSTRAINT "PK_Customer" PRIMARY KEY ("CustomerID")
+);
+
