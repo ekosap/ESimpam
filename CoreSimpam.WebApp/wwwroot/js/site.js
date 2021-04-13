@@ -13,3 +13,9 @@ function Loading(isLoad, button, text) {
     }
     button.attr('disabled', isLoad);
 }
+function Combobox(selectElement) {
+    selectElement.select2({
+        theme: 'bootstrap4',
+        width: '100%'
+    });
+}

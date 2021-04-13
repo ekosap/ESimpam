@@ -1,5 +1,6 @@
 ﻿@section styles{
     <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    @await Html.PartialAsync("CssPartial/_selectCSSPartial")
     <style type="text/css">
         .table tr td {
             vertical-align: middle;
@@ -47,6 +48,7 @@
 @section Scripts{
     <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+    @await Html.PartialAsync("ScriptsPartial/_Select2ScriptsPartial")
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -63,6 +65,8 @@
                     $("#modal-input").find(".modal-dialog").addClass("modal-md");
                     $('#modal-input').find('.modal-content').html(dd);
                     $('#modal-input').modal('show');
+                    let selectElement = $('#modal-input').find('.modal-content').find('.select2bs4');
+                    Combobox(selectElement);
                     Loading(false, $("#btnAdd"), "Add");
                 },
                 error: function (e) {
@@ -166,6 +170,8 @@
                         $("#modal-input").find(".modal-dialog").addClass("modal-md");
                         $('#modal-input').find('.modal-content').html(dd);
                         $('#modal-input').modal('show');
+                        let selectElement = $('#modal-input').find('.modal-content').find('.select2bs4');
+                        Combobox(selectElement);
                     }
                     else {
                         swal(dd.data);

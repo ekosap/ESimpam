@@ -32,7 +32,9 @@
         </div>
         <div class="form-group row">
             <label asp-for="Resident.ResidentID" class="control-label col-md-4"></label>
-            <select asp-for="Resident.ResidentID" asp-items='(List<SelectListItem>)ViewData["resident"]' class="form-control col-md-8 select2bs4" disabled></select>
+            <div class="col-md-8 pr-0 pl-0">
+                <select asp-for="Resident.ResidentID" asp-items='(List<SelectListItem>)ViewData["resident"]' class="form-control select2bs4" disabled="disabled"></select>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
