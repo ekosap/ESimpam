@@ -74,7 +74,8 @@ namespace CoreSimpam.Repo
                             IsActive = r.IsActive,
                             ResidentID = r.ResidentID,
                             ResidentName = r.ResidentName,
-                            ResidentNumber = r.ResidentNumber
+                            ResidentNumber = r.ResidentNumber,
+                            Price = r.Price
                         }).FirstOrDefault();
             res.status = data != null;
             res.data = data;
@@ -101,7 +102,8 @@ namespace CoreSimpam.Repo
                 {
                     IsActive = model.IsActive,
                     ResidentName = model.ResidentName,
-                    ResidentNumber = model.ResidentNumber
+                    ResidentNumber = model.ResidentNumber,
+                    Price = model.Price
                 });
 
                 await context.SaveChangesAsync();
@@ -129,6 +131,7 @@ namespace CoreSimpam.Repo
 
                 resident.ResidentName = model.ResidentName;
                 resident.IsActive = model.IsActive;
+                resident.Price = model.Price;
 
                 await context.SaveChangesAsync();
                 res.status = true;

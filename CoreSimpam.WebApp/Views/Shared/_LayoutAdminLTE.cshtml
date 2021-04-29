@@ -21,8 +21,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         @await Html.PartialAsync("AdminLTEComponents/Navbar")
-        @await Component.InvokeAsync("UserMenu")
-        @*@await Html.PartialAsync("AdminLTEComponents/Sidebar")*@
+        @*@await Component.InvokeAsync("UserMenu")*@
+        @await Html.PartialAsync("AdminLTEComponents/Sidebar")
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->
@@ -58,5 +58,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="~/js/sweetalert.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '/api/menu',
+                method: 'get',
+                dataType: 'json',
+                success: function (e) {
+                    buildMenu(e, $('#menu'));
+                },
+                error: function (e) {
+                    alert(e.statusText)
+                }
+            });
+            return false;
+        });
+    </script>
 </body>
 </html>

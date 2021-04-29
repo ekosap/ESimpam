@@ -4,14 +4,16 @@ using CoreSimpam.Model.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreSimpam.Model.Migrations
 {
     [DbContext(typeof(SimpamDBContext))]
-    partial class SimpamDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210429032812_AddPriceByResident")]
+    partial class AddPriceByResident
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,9 +140,6 @@ namespace CoreSimpam.Model.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ControllerName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IconCss")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")

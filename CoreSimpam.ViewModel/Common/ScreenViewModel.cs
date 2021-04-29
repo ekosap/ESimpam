@@ -18,6 +18,8 @@ namespace CoreSimpam.ViewModel
         public string ControllerName { get; set; }
         [Display(Name = "Action name")]
         public string ActionName { get; set; }
+        [Display(Name = "CSS Icon")]
+        public string IconCss { get; set; }
         public string ParentName { get; set; }
         [Display(Name = "Menu")]
         public bool IsMenu { get; set; }

@@ -8,6 +8,10 @@ namespace CoreSimpam.WebApp.Controllers.Transaction
 {
     public class TransactionController : Controller
     {
+        public TransactionController()
+        {
+
+        }
         public IActionResult Index()
         {
             return View();

@@ -4,14 +4,16 @@ using CoreSimpam.Model.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreSimpam.Model.Migrations
 {
     [DbContext(typeof(SimpamDBContext))]
-    partial class SimpamDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210420090901_addPrecisionDecimal4digit")]
+    partial class addPrecisionDecimal4digit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,9 +57,6 @@ namespace CoreSimpam.Model.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,0)");
 
                     b.Property<string>("ResidentName")
                         .HasColumnType("nvarchar(max)");
@@ -138,9 +137,6 @@ namespace CoreSimpam.Model.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ControllerName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IconCss")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")

@@ -16,6 +16,7 @@ namespace CoreSimpam.Model
         public string ScreenName { get; set; }
         public string ControllerName { get; set; }
         public string ActionName { get; set; }
+        public string IconCss { get; set; }
         public bool IsMenu { get; set; }
         public bool IsActive { get; set; }
         public long ParentID { get; set; }

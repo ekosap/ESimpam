@@ -103,7 +103,8 @@ namespace CoreSimpam.Repo
                                     ScreenName = s.ScreenName,
                                     AllowDelete = sr.DeleteFlag,
                                     AllowRead = sr.ReadFlag,
-                                    AllowWrite = sr.WriteFlag
+                                    AllowWrite = sr.WriteFlag,
+                                    IconCss = s.IconCss
                                 }).ToListAsync();
                 res.data.Menu = await dataMenu;
                 res.data.CountChild = res.data.Menu.Count;

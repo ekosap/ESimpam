@@ -17,5 +17,7 @@ namespace CoreSimpam.ViewModel
         public string ResidentNumber { get; set; }
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+        [Display(Name = "Price")]
+        public decimal Price { get; set; }
     }
 }

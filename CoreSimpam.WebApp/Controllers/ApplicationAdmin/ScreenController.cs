@@ -14,21 +14,6 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
     [AuthorizeWebAttributes]
     public class ScreenController : Controller
     {
-        private ScreenViewModel Screen
-        {
-            get
-            {
-                if (ViewData["Screen"] == null)
-                {
-                    ViewData["Screen"] = _repo.GetAll().Result.data;
-                }
-                return (ScreenViewModel)ViewData["Screen"];
-            }
-            set
-            {
-                ViewData["Screen"] = value ?? _repo.GetAll().Result.data;
-            }
-        }
         private List<SelectListItem> Parent
         {
             get
@@ -59,9 +44,9 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             ViewData["Title"] = "Application Screen";
             return await Task.FromResult(View());
         }
-        public IActionResult GetData(JqueryDatatableParam param)
+        public async Task<IActionResult> GetDataAsync(JqueryDatatableParam param)
         {
-            var data = Screen;
+            var data = (await _repo.GetAll()).data;
 
             if (!string.IsNullOrEmpty(param.sSearch))
             {
@@ -96,8 +81,8 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             {
                 param.sEcho,
                 iTotalRecords = totalRecords,
-                iTotalDisplayRecords = totalRecords,
-                Data = displayResult
+                iTotalDisplayRecords = displayResult.Count,
+                aaData = displayResult
             });
 
         }
@@ -117,7 +102,6 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var res = await _repo.Insert(model);
-                if (res.status) { Screen = null; Parent = null; }
                 return Json(res);
             }
             return PartialView("_Add", model);
@@ -139,7 +123,6 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
             if (ModelState.IsValid)
             {
                 var res = await _repo.Update(model);
-                if (res.status) { Screen = null; Parent = null; }
                 return Json(res);
             }
             return PartialView("_Edit", model);
@@ -148,7 +131,6 @@ namespace CoreSimpam.WebApp.Controllers.ApplicationAdmin
         public async Task<IActionResult> Delete(long id)
         {
             var res = await _repo.Delete(id);
-            if (res.status) { Screen = null; Parent = null; }
             return Json(res);
         }
     }

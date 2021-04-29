@@ -91,3 +91,49 @@ CREATE TABLE "Customer"."Customer"(
 	CONSTRAINT "PK_Customer" PRIMARY KEY ("CustomerID")
 );
 
+/* SQLINES DEMO *** ema Billing    Script Date: 4/29/2021 11:41:42 AM ******/
+CREATE SCHEMA Billing;
+/* SQLINES DEMO *** ema Customer    Script Date: 4/29/2021 11:41:42 AM ******/
+CREATE SCHEMA Customer;
+/* SQLINES DEMO *** le Billing.Trx    Script Date: 4/29/2021 11:41:42 AM ******/
+/* SET ANSI_NULLS ON */
+ 
+/* SET QUOTED_IDENTIFIER ON */
+ 
+CREATE SEQUENCE Billing.Trx_seq;
+
+CREATE TABLE Billing.Trx(
+	TrxID bigint DEFAULT NEXTVAL ('Billing.Trx_seq') NOT NULL,
+	TrxDate Timestamp(6) NOT NULL,
+	Total decimal(18, 4) NOT NULL,
+	CreatedDate Timestamp(6) NOT NULL,
+	CreatedBy bigint NOT NULL,
+	UpdatedDate Timestamp(6) NULL,
+	UpdatedBy bigint NULL,
+ CONSTRAINT PK_Trx PRIMARY KEY 
+(
+	TrxID 
+) 
+);
+
+/* SQLINES DEMO *** le Billing.TrxItem    Script Date: 4/29/2021 11:41:42 AM ******/
+/* SET ANSI_NULLS ON */
+ 
+/* SET QUOTED_IDENTIFIER ON */
+ 
+CREATE SEQUENCE Billing.TrxItem_seq;
+
+CREATE TABLE Billing.TrxItem(
+	TrxItemID bigint DEFAULT NEXTVAL ('Billing.TrxItem_seq') NOT NULL,
+	TrxID bigint NOT NULL,
+	CustomerID bigint NOT NULL,
+	BeforeAmount decimal(18, 4) NOT NULL,
+	AfterAmount decimal(18, 4) NOT NULL,
+	Qty decimal(18, 4) NOT NULL,
+	Price decimal(18, 4) NOT NULL,
+	IsClear Boolean NOT NULL,
+ CONSTRAINT PK_TrxItem PRIMARY KEY 
+(
+	TrxItemID 
+) 
+);

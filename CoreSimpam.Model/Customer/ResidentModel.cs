@@ -16,5 +16,7 @@ namespace CoreSimpam.Model
         public string ResidentName { get; set; }
         public string ResidentNumber { get; set; }
         public bool IsActive { get; set; }
+        [Column(TypeName = "decimal(18,0)")]
+        public decimal Price { get; set; }
     }
 }

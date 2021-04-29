@@ -4,14 +4,16 @@ using CoreSimpam.Model.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreSimpam.Model.Migrations
 {
     [DbContext(typeof(SimpamDBContext))]
-    partial class SimpamDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210418055338_addTableTRx")]
+    partial class addTableTRx
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,9 +57,6 @@ namespace CoreSimpam.Model.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,0)");
 
                     b.Property<string>("ResidentName")
                         .HasColumnType("nvarchar(max)");
@@ -140,9 +139,6 @@ namespace CoreSimpam.Model.Migrations
                     b.Property<string>("ControllerName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IconCss")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -174,7 +170,7 @@ namespace CoreSimpam.Model.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("TrxDate")
                         .HasColumnType("datetime2");
@@ -198,22 +194,19 @@ namespace CoreSimpam.Model.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("AfterAmount")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BeforeAmount")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("CustomerID")
                         .HasColumnType("bigint");
 
-                    b.Property<bool>("IsClear")
-                        .HasColumnType("bit");
-
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Qty")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("TrxID")
                         .HasColumnType("bigint");

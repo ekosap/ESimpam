@@ -71,7 +71,8 @@ namespace CoreSimpam.Repo
                         IsMenu = x.screen.IsMenu,
                         IsActive = x.screen.IsActive,
                         ParentID = x.screen.ParentID,
-                        ParentName = y.ScreenName
+                        ParentName = y.ScreenName,
+                        IconCss = x.screen.IconCss
                     })
                 .ToListAsync();
             res.data.screens = dataScreen;
@@ -95,6 +96,7 @@ namespace CoreSimpam.Repo
                 res.data.IsActive = data.IsActive;
                 res.data.ParentID = data.ParentID;
                 res.data.ParentName = dataParent?.ScreenName;
+                res.data.IconCss = data.IconCss;
             }
             return res;
         }
@@ -116,6 +118,7 @@ namespace CoreSimpam.Repo
                     IsMenu = model.IsMenu,
                     IsActive = model.IsActive,
                     ParentID = model.ParentID,
+                    IconCss = model.IconCss
                 });
                 await context.SaveChangesAsync();
                 res.status = true;
@@ -149,6 +152,7 @@ namespace CoreSimpam.Repo
                 data.IsMenu = model.IsMenu;
                 data.IsActive = model.IsActive;
                 data.ParentID = model.ParentID;
+                data.IconCss = model.IconCss;
 
                 await context.SaveChangesAsync();
                 res.status = true;
