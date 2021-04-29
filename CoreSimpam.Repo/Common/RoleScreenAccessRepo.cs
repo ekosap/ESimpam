@@ -36,20 +36,20 @@ namespace CoreSimpam.Repo
             try
             {
                 ScreenViewModel dataMenu = (from s in _context.Screen
-                            join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
-                            join r in _context.Roles on sr.RoleID equals r.RoleID
-                            where s.ControllerName.ToLower().Replace(" ","") == Controller.ToLower().Replace(" ", "") /*&& s.ActionName == Action*/
-                            && r.RoleName.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "") && ((Accesslevel == AccessLevel.AllowRead && sr.ReadFlag == true) || (Accesslevel == AccessLevel.AllowWrite && sr.WriteFlag == true)
-                            || (Accesslevel == AccessLevel.AllowDelete && sr.DeleteFlag == true))
+                            join sr in _context.RoleScreen on s.screenid equals sr.screenid
+                            join r in _context.Roles on sr.roleid equals r.roleid
+                            where s.controllername.ToLower().Replace(" ","") == Controller.ToLower().Replace(" ", "") /*&& s.ActionName == Action*/
+                            && r.rolename.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "") && ((Accesslevel == AccessLevel.AllowRead && sr.readflag == true) || (Accesslevel == AccessLevel.AllowWrite && sr.writeflag == true)
+                            || (Accesslevel == AccessLevel.AllowDelete && sr.deleteflag == true))
                             select new ScreenViewModel()
                             {
-                                ActionName = s.ActionName,
-                                ControllerName = s.ControllerName,
-                                IsActive = s.IsActive,
-                                IsMenu = s.IsMenu,
-                                ParentID = s.ParentID,
-                                ScreenID = s.ScreenID,
-                                ScreenName = s.ScreenName
+                                ActionName = s.actionname,
+                                ControllerName = s.controllername,
+                                IsActive = s.isactive,
+                                IsMenu = s.ismenu,
+                                ParentID = s.parentid,
+                                ScreenID = s.screenid,
+                                ScreenName = s.screenname
                             }).FirstOrDefault();
                 res.status = dataMenu != null;
             }
@@ -65,16 +65,16 @@ namespace CoreSimpam.Repo
             Metadata<RoleScreenViewModel> metadata = new Metadata<RoleScreenViewModel>();
             metadata.data.RoleID = RoleID;
             var result = (from s in _context.Screen
-                          join rs in _context.RoleScreen on new { screenID = s.ScreenID, roleID = RoleID } equals new { screenID = rs.ScreenID, roleID = rs.RoleID } into screenRole
+                          join rs in _context.RoleScreen on new { screenID = s.screenid, roleID = RoleID } equals new { screenID = rs.screenid, roleID = rs.roleid } into screenRole
                           from srs in screenRole.DefaultIfEmpty()
                           select new ScreenComponentViewModel
                           {
-                              RoleID = srs == null ? 0 : srs.RoleID,
-                              ScreenID = s.ScreenID,
-                              ScreenName = s.ScreenName,
-                              DeleteFlag = srs == null ? false : srs.DeleteFlag,
-                              WriteFlag = srs == null ? false : srs.WriteFlag,
-                              ReadFlag = srs == null ? false : srs.ReadFlag,
+                              RoleID = srs == null ? 0 : srs.roleid,
+                              ScreenID = s.screenid,
+                              ScreenName = s.screenname,
+                              DeleteFlag = srs == null ? false : srs.deleteflag,
+                              WriteFlag = srs == null ? false : srs.writeflag,
+                              ReadFlag = srs == null ? false : srs.readflag,
                           }).ToList();
             metadata.status = true;
             metadata.data.Screens = result;
@@ -88,23 +88,23 @@ namespace CoreSimpam.Repo
             if (_httpContext.User.Identity.IsAuthenticated)
             {
                 var dataMenu = (from s in _context.Screen
-                                join sr in _context.RoleScreen on s.ScreenID equals sr.ScreenID
-                                join r in _context.Roles on sr.RoleID equals r.RoleID
-                                where s.IsActive == true && s.IsMenu == true
-                                && r.RoleName.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "")
+                                join sr in _context.RoleScreen on s.screenid equals sr.screenid
+                                join r in _context.Roles on sr.roleid equals r.roleid
+                                where s.isactive == true && s.ismenu == true
+                                && r.rolename.ToLower().Replace(" ", "") == _httpContext.User.GetUserRole().ToLower().Replace(" ", "")
                                 select new ScreenViewModel()
                                 {
-                                    ActionName = s.ActionName,
-                                    ControllerName = s.ControllerName,
-                                    IsActive = s.IsActive,
-                                    IsMenu = s.IsMenu,
-                                    ParentID = s.ParentID,
-                                    ScreenID = s.ScreenID,
-                                    ScreenName = s.ScreenName,
-                                    AllowDelete = sr.DeleteFlag,
-                                    AllowRead = sr.ReadFlag,
-                                    AllowWrite = sr.WriteFlag,
-                                    IconCss = s.IconCss
+                                    ActionName = s.actionname,
+                                    ControllerName = s.controllername,
+                                    IsActive = s.isactive,
+                                    IsMenu = s.ismenu,
+                                    ParentID = s.parentid,
+                                    ScreenID = s.screenid,
+                                    ScreenName = s.screenname,
+                                    AllowDelete = sr.deleteflag,
+                                    AllowRead = sr.readflag,
+                                    AllowWrite = sr.writeflag,
+                                    IconCss = s.iconcss
                                 }).ToListAsync();
                 res.data.Menu = await dataMenu;
                 res.data.CountChild = res.data.Menu.Count;
@@ -121,17 +121,17 @@ namespace CoreSimpam.Repo
             };
             try
             {
-                _context.RoleScreen.RemoveRange(_context.RoleScreen.Where(x => x.RoleID == model.RoleID));
+                _context.RoleScreen.RemoveRange(_context.RoleScreen.Where(x => x.roleid == model.RoleID));
                 List<RoleScreenModel> lsModel = new List<RoleScreenModel>();
                 model.Screens.ForEach(rolescreen =>
                 {
                     lsModel.Add(new RoleScreenModel()
                     {
-                        RoleID = model.RoleID,
-                        ScreenID = rolescreen.ScreenID,
-                        DeleteFlag = rolescreen.DeleteFlag,
-                        ReadFlag = rolescreen.ReadFlag,
-                        WriteFlag = rolescreen.WriteFlag
+                        roleid = model.RoleID,
+                        screenid = rolescreen.ScreenID,
+                        deleteflag = rolescreen.DeleteFlag,
+                        readflag = rolescreen.ReadFlag,
+                        writeflag = rolescreen.WriteFlag
                     });
                 });
                 _context.RoleScreen.AddRange(lsModel);

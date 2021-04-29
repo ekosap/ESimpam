@@ -5,17 +5,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoreSimpam.Model
 {
-    [Table("Users", Schema ="Common")]
+    [Table("users", Schema ="common")]
     public class UserModel
     {
         [Key]
-        public long UserID { get; set; }
-        [ForeignKey("RoleID")]
-        public long RoleID { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public string Salt { get; set; }
-        public virtual RoleModel Role { get; set; }
+        public long userid { get; set; }
+        [ForeignKey("roleid")]
+        public long roleid { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public string email { get; set; }
+        public string salt { get; set; }
+        public virtual RoleModel role { get; set; }
     }
 }

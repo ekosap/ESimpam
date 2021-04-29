@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("RoleScreen", Schema = "Common")]
-    public class RoleScreenModel
+    [Table("rolescreen", Schema = "common")]
+    public class RoleScreenModel :DTOBase
     {
         [Key]
-        public long RoleScreenID { get; set; }
-        public long RoleID { get; set; }
-        public long ScreenID { get; set; }
-        public bool ReadFlag { get; set; }
-        public bool WriteFlag { get; set; }
-        public bool DeleteFlag { get; set; }
-        public virtual ScreenModel Screen { get; set; }
-        public virtual RoleModel Role { get; set; }
+        public long rolescreenid { get; set; }
+        public long roleid { get; set; }
+        public long screenid { get; set; }
+        public bool readflag { get; set; }
+        public bool writeflag { get; set; }
+        public bool deleteflag { get; set; }
+        public virtual ScreenModel screen { get; set; }
+        public virtual RoleModel role { get; set; }
     }
 }

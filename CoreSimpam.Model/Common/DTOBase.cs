@@ -8,9 +8,9 @@ namespace CoreSimpam.Model
 {
     public class DTOBase
     {
-        public DateTime CreatedDate { get; set; }
-        public long CreatedBy { get; set; }
-        public DateTime? UpdatedDate { get; set; }
-        public long? UpdatedBy { get; set; }
+        public DateTime createddate { get; set; }
+        public long createdby { get; set; }
+        public DateTime? updateddate { get; set; }
+        public long? updatedby { get; set; }
     }
 }

@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("TrxItem", Schema = "Billing")]
+    [Table("trxitem", Schema = "billing")]
     public class TrxItemModel
     {
         [Key]
-        public long TrxItemID { get; set; }
-        public long TrxID { get; set; }
-        public long CustomerID { get; set; }
+        public long trxitemid { get; set; }
+        public long trxid { get; set; }
+        public long customerid { get; set; }
         [Column(TypeName = "decimal(18,4)")]
-        public decimal BeforeAmount { get; set; }
+        public decimal beforeamount { get; set; }
         [Column(TypeName = "decimal(18,4)")]
-        public decimal AfterAmount { get; set; }
+        public decimal afteramount { get; set; }
         [Column(TypeName = "decimal(18,4)")]
-        public decimal  Qty { get; set; }
+        public decimal  qty { get; set; }
         [Column(TypeName = "decimal(18,4)")]
-        public decimal Price { get; set; }
-        public bool IsClear { get; set; }
+        public decimal price { get; set; }
+        public bool isclear { get; set; }
     }
 }

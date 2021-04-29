@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("Screen", Schema = "Common")]
+    [Table("screen", Schema = "common")]
     public class ScreenModel
     {
         [Key]
-        public long ScreenID { get; set; }
-        public string ScreenName { get; set; }
-        public string ControllerName { get; set; }
-        public string ActionName { get; set; }
-        public string IconCss { get; set; }
-        public bool IsMenu { get; set; }
-        public bool IsActive { get; set; }
-        public long ParentID { get; set; }
+        public long screenid { get; set; }
+        public string screenname { get; set; }
+        public string controllername { get; set; }
+        public string actionname { get; set; }
+        public string iconcss { get; set; }
+        public bool ismenu { get; set; }
+        public bool isactive { get; set; }
+        public long parentid { get; set; }
     }
 }

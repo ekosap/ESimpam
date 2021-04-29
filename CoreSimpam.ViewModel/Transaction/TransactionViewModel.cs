@@ -13,5 +13,6 @@ namespace CoreSimpam.ViewModel
         public long TrxID { get; set; }
         public DateTime TrxDate { get; set; }
         public decimal Total { get; set; }
+        public List<TrxItemViewModel> listItemTrx { get; set; } = new List<TrxItemViewModel>();
     }
 }

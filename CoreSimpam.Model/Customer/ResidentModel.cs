@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("Resident", Schema ="Customer")]
+    [Table("resident", Schema ="customer")]
     public class ResidentModel
     {
         [Key]
-        public long ResidentID { get; set; }
-        public string ResidentName { get; set; }
-        public string ResidentNumber { get; set; }
-        public bool IsActive { get; set; }
+        public long residentid { get; set; }
+        public string residentname { get; set; }
+        public string residentnumber { get; set; }
+        public bool isactive { get; set; }
         [Column(TypeName = "decimal(18,0)")]
-        public decimal Price { get; set; }
+        public decimal price { get; set; }
     }
 }

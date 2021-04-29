@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("Customer", Schema = "Customer")]
+    [Table("customer", Schema = "customer")]
     public class CustomerModel
     {
         [Key]
-        public long CustomerID { get; set; }
-        public string CustomerName { get; set; }
-        public string CustomerAddress { get; set; }
-        public string Phone { get; set; }
-        public string CustomerNumber { get; set; }
-        public long ResidentID { get; set; }
+        public long customerid { get; set; }
+        public string customername { get; set; }
+        public string customeraddress { get; set; }
+        public string phone { get; set; }
+        public string customernumber { get; set; }
+        public long residentid { get; set; }
     }
 }

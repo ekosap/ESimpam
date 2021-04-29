@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace CoreSimpam.Model
 {
-    [Table("Trx", Schema ="Billing")]
+    [Table("trx", Schema ="billing")]
     public class TransactionModel :DTOBase
     {
         [Key]
-        public long TrxID { get; set; }
-        public DateTime TrxDate { get; set; }
+        public long trxid { get; set; }
+        public DateTime trxdate { get; set; }
         [Column(TypeName = "decimal(18,4)")]
-        public decimal Total { get; set; }        
+        public decimal total { get; set; }        
     }
 }

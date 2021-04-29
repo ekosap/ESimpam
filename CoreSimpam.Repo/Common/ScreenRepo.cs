@@ -31,11 +31,11 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Screen.Where(x => x.ScreenID == ScreenID).FirstOrDefaultAsync();
+                var data = await context.Screen.Where(x => x.screenid == ScreenID).FirstOrDefaultAsync();
                 if (data == null)
                     return new Metadata() { status = false, data = "Screen application not found" };
 
-                context.RoleScreen.RemoveRange(context.RoleScreen.Where(x => x.ScreenID == ScreenID));
+                context.RoleScreen.RemoveRange(context.RoleScreen.Where(x => x.screenid == ScreenID));
                 context.Screen.Remove(data);
 
                 await context.SaveChangesAsync();
@@ -57,22 +57,22 @@ namespace CoreSimpam.Repo
             var dataScreen = await context.Screen
                 .GroupJoin(
                     context.Screen,
-                    s1 => s1.ParentID,
-                    s2 => s2.ScreenID,
+                    s1 => s1.parentid,
+                    s2 => s2.screenid,
                     (s1, s2) => new { screen = s1, parent = s2 })
                 .SelectMany(
                     x => x.parent.DefaultIfEmpty(),
                     (x, y) => new ScreenViewModel()
                     {
-                        ScreenID = x.screen.ScreenID,
-                        ScreenName = x.screen.ScreenName,
-                        ControllerName = x.screen.ControllerName,
-                        ActionName = x.screen.ActionName,
-                        IsMenu = x.screen.IsMenu,
-                        IsActive = x.screen.IsActive,
-                        ParentID = x.screen.ParentID,
-                        ParentName = y.ScreenName,
-                        IconCss = x.screen.IconCss
+                        ScreenID = x.screen.screenid,
+                        ScreenName = x.screen.screenname,
+                        ControllerName = x.screen.controllername,
+                        ActionName = x.screen.actionname,
+                        IsMenu = x.screen.ismenu,
+                        IsActive = x.screen.isactive,
+                        ParentID = x.screen.parentid,
+                        ParentName = y.screenname,
+                        IconCss = x.screen.iconcss
                     })
                 .ToListAsync();
             res.data.screens = dataScreen;
@@ -83,20 +83,20 @@ namespace CoreSimpam.Repo
         public async Task<Metadata<ScreenViewModel>> GetByID(long ScreenID)
         {
             Metadata<ScreenViewModel> res = new Metadata<ScreenViewModel>();
-            var data = await context.Screen.FirstOrDefaultAsync(x => x.ScreenID == ScreenID);
-            var dataParent = await context.Screen.FirstOrDefaultAsync(x => x.ScreenID == data.ParentID);
+            var data = await context.Screen.FirstOrDefaultAsync(x => x.screenid == ScreenID);
+            var dataParent = await context.Screen.FirstOrDefaultAsync(x => x.screenid == data.parentid);
             if (data != null)
             {
                 res.status = true;
-                res.data.ScreenID = data.ScreenID;
-                res.data.ScreenName = data.ScreenName;
-                res.data.ControllerName = data.ControllerName;
-                res.data.ActionName = data.ActionName;
-                res.data.IsMenu = data.IsMenu;
-                res.data.IsActive = data.IsActive;
-                res.data.ParentID = data.ParentID;
-                res.data.ParentName = dataParent?.ScreenName;
-                res.data.IconCss = data.IconCss;
+                res.data.ScreenID = data.screenid;
+                res.data.ScreenName = data.screenname;
+                res.data.ControllerName = data.controllername;
+                res.data.ActionName = data.actionname;
+                res.data.IsMenu = data.ismenu;
+                res.data.IsActive = data.isactive;
+                res.data.ParentID = data.parentid;
+                res.data.ParentName = dataParent?.screenname;
+                res.data.IconCss = data.iconcss;
             }
             return res;
         }
@@ -106,19 +106,19 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Screen.AnyAsync(x => x.ScreenName.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.ScreenID != model.ScreenID);
+                var data = await context.Screen.AnyAsync(x => x.screenname.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.screenid != model.ScreenID);
                 if (data)
                     return new Metadata() { status = false, data = "Screen name is ready" };
                 await context.Screen.AddAsync(new ScreenModel()
                 {
-                    ScreenID = model.ScreenID,
-                    ScreenName = model.ScreenName,
-                    ControllerName = model.ControllerName,
-                    ActionName = model.ActionName,
-                    IsMenu = model.IsMenu,
-                    IsActive = model.IsActive,
-                    ParentID = model.ParentID,
-                    IconCss = model.IconCss
+                    screenid = model.ScreenID,
+                    screenname = model.ScreenName,
+                    controllername = model.ControllerName,
+                    actionname = model.ActionName,
+                    ismenu = model.IsMenu,
+                    isactive = model.IsActive,
+                    parentid = model.ParentID,
+                    iconcss = model.IconCss
                 });
                 await context.SaveChangesAsync();
                 res.status = true;
@@ -138,21 +138,21 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataScreen = await context.Screen.AnyAsync(x => x.ScreenName.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.ScreenID != model.ScreenID);
+                var dataScreen = await context.Screen.AnyAsync(x => x.screenname.ToLower().Replace(" ", "") == model.ScreenName.ToLower().Replace(" ", "") && x.screenid != model.ScreenID);
                 if (dataScreen)
                     return new Metadata() { status = false, data = "Screen name is ready" };
-                var data = await context.Screen.Where(x => x.ScreenID == model.ScreenID).FirstOrDefaultAsync();
+                var data = await context.Screen.Where(x => x.screenid == model.ScreenID).FirstOrDefaultAsync();
                 if (data == null)
                     return new Metadata() { status = false, data = "Screen not found" };
 
-                data.ScreenID = model.ScreenID;
-                data.ScreenName = model.ScreenName;
-                data.ControllerName = model.ControllerName;
-                data.ActionName = model.ActionName;
-                data.IsMenu = model.IsMenu;
-                data.IsActive = model.IsActive;
-                data.ParentID = model.ParentID;
-                data.IconCss = model.IconCss;
+                data.screenid = model.ScreenID;
+                data.screenname = model.ScreenName;
+                data.controllername = model.ControllerName;
+                data.actionname = model.ActionName;
+                data.ismenu = model.IsMenu;
+                data.isactive = model.IsActive;
+                data.parentid = model.ParentID;
+                data.iconcss = model.IconCss;
 
                 await context.SaveChangesAsync();
                 res.status = true;

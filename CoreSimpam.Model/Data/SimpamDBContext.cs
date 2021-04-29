@@ -14,9 +14,9 @@ namespace CoreSimpam.Model.Data
             modelBuilder.Entity<RoleModel>().HasData(
                 new RoleModel
                 {
-                    RoleID = 1,
-                    RoleName = "root",
-                    IsEnabled = true
+                    roleid = 1,
+                    rolename = "root",
+                    isenabled = true
                 }
             );
         }

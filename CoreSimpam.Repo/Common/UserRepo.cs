@@ -32,14 +32,14 @@ namespace CoreSimpam.Repo
         {
             var userModel = await GetUserAsync(username);
             if (userModel == null) return new Metadata() { status = false, data = "Username not found" };
-            string salt = userModel.Salt;
-            string pass = userModel.Password;
+            string salt = userModel.salt;
+            string pass = userModel.password;
             if (!string.Equals(pass, HashedPassword(password, salt)))
                 return new Metadata() { status = false, data = "Password Incorrect" };
-            return new Metadata() { status = true, data = userModel.UserID.ToString() };
+            return new Metadata() { status = true, data = userModel.userid.ToString() };
         }
         private string HashedPassword(string password, string salt) => Crypter.Blowfish.Crypt(password, salt);
-        private async Task<UserModel> GetUserAsync(string username) => await context.Users.Where(x => x.UserName.ToLower().Replace(" ", "") == username.ToLower().Replace(" ", "")).FirstOrDefaultAsync();
+        private async Task<UserModel> GetUserAsync(string username) => await context.Users.Where(x => x.username.ToLower().Replace(" ", "") == username.ToLower().Replace(" ", "")).FirstOrDefaultAsync();
         private string GenerateSalt(int number = 10) => Crypter.Blowfish.GenerateSalt(number);
 
         public async Task<Metadata<UserViewModel>> GetAll()
@@ -48,15 +48,15 @@ namespace CoreSimpam.Repo
             res.data.users = await context.Users
                 .Join(
                     context.Roles,
-                    u => u.RoleID,
-                    r => r.RoleID,
+                    u => u.roleid,
+                    r => r.roleid,
                     (u, r) => new UserViewModel()
                     {
-                        Email = u.Email,
-                        UserID = u.UserID,
-                        UserName = u.UserName,
-                        RoleID = u.RoleID,
-                        RoleName = r.RoleName
+                        Email = u.email,
+                        UserID = u.userid,
+                        UserName = u.username,
+                        RoleID = u.roleid,
+                        RoleName = r.rolename
                     })
                 .Where(x => x.RoleID > 1)
                 .ToListAsync();
@@ -67,16 +67,16 @@ namespace CoreSimpam.Repo
         public async Task<Metadata<UserViewModel>> GetByID(long UserID)
         {
             Metadata<UserViewModel> res = new Metadata<UserViewModel>();
-            var data = await context.Users.FirstOrDefaultAsync(x => x.UserID == UserID);
-            var dataRole = await context.Roles.FirstOrDefaultAsync(x => x.RoleID == data.RoleID);            
+            var data = await context.Users.FirstOrDefaultAsync(x => x.userid == UserID);
+            var dataRole = await context.Roles.FirstOrDefaultAsync(x => x.roleid == data.roleid);            
             if (data != null)
             {
                 res.status = true;
-                res.data.UserID = data.UserID;
-                res.data.Email = data.Email;
-                res.data.UserName = data.UserName;
-                res.data.RoleID = data.RoleID;
-                res.data.RoleName = dataRole.RoleName;
+                res.data.UserID = data.userid;
+                res.data.Email = data.email;
+                res.data.UserName = data.username;
+                res.data.RoleID = data.roleid;
+                res.data.RoleName = dataRole.rolename;
             }
             return res;
         }
@@ -86,17 +86,17 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataUSer = await context.Users.AnyAsync(x => x.UserName.ToLower().Replace(" ", "") == model.UserName.ToLower().Replace(" ", "") && x.UserID != model.UserID);
+                var dataUSer = await context.Users.AnyAsync(x => x.username.ToLower().Replace(" ", "") == model.UserName.ToLower().Replace(" ", "") && x.userid != model.UserID);
                 if (dataUSer)
                     return new Metadata() { status = false, data = "User name is ready" };
                 string saltNow = GenerateSalt();
                 await context.Users.AddAsync(new UserModel()
                 {
-                    Email = model.Email,
-                    UserName = model.UserName,
-                    Salt = saltNow,
-                    Password = HashedPassword(model.Password, saltNow),
-                    RoleID = model.RoleID
+                    email = model.Email,
+                    username = model.UserName,
+                    salt = saltNow,
+                    password = HashedPassword(model.Password, saltNow),
+                    roleid = model.RoleID
                 });
                 await context.SaveChangesAsync();
                 res.status = true;
@@ -116,15 +116,15 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var data = await context.Users.AnyAsync(x => x.UserName.ToLower().Replace(" ", "")== model.UserName.ToLower().Replace(" ", "") && x.UserID != model.UserID);
+                var data = await context.Users.AnyAsync(x => x.username.ToLower().Replace(" ", "")== model.UserName.ToLower().Replace(" ", "") && x.userid != model.UserID);
                 if (data)
                     return new Metadata() { status = false, data = "User name is ready" };
-                var dataUSer = await context.Users.Where(x => x.UserID == model.UserID).FirstOrDefaultAsync();
+                var dataUSer = await context.Users.Where(x => x.userid == model.UserID).FirstOrDefaultAsync();
                 if (dataUSer == null)
                     return new Metadata() { status = false, data = "User not found" };
 
-                dataUSer.Email = model.Email;
-                dataUSer.RoleID = model.RoleID;
+                dataUSer.email = model.Email;
+                dataUSer.roleid = model.RoleID;
 
                 await context.SaveChangesAsync();
                 res.status = true;
@@ -144,7 +144,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var dataUSer = await context.Users.Where(x => x.UserID == UserID).FirstOrDefaultAsync();
+                var dataUSer = await context.Users.Where(x => x.userid == UserID).FirstOrDefaultAsync();
                 if (dataUSer == null)
                     return new Metadata() { status = false, data = "User not found" };
 

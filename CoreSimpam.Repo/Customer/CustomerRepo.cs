@@ -31,7 +31,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var Customer = (from r in context.Customer where r.CustomerID == CustomerID select r).FirstOrDefault();
+                var Customer = (from r in context.Customer where r.customerid == CustomerID select r).FirstOrDefault();
 
                 if (Customer == null) { return new Metadata() { data = "Customer not found", status = false }; }
 
@@ -51,20 +51,20 @@ namespace CoreSimpam.Repo
         {
             Metadata<List<CustomerViewModel>> res = new Metadata<List<CustomerViewModel>>();
             var data = (from c in context.Customer
-                        join r in context.Resident on c.ResidentID equals r.ResidentID
+                        join r in context.Resident on c.residentid equals r.residentid
                         select new CustomerViewModel()
                         {
-                            CustomerAddress = c.CustomerAddress,
-                            CustomerID = c.CustomerID,
-                            CustomerName = c.CustomerName,
-                            CustomerNumber = c.CustomerNumber,
-                            Phone = c.Phone,
+                            CustomerAddress = c.customeraddress,
+                            CustomerID = c.customerid,
+                            CustomerName = c.customername,
+                            CustomerNumber = c.customernumber,
+                            Phone = c.phone,
                             Resident = new ResidentViewModel()
                             {
-                                IsActive = r.IsActive,
-                                ResidentID = r.ResidentID,
-                                ResidentName = r.ResidentName,
-                                ResidentNumber = r.ResidentNumber
+                                IsActive = r.isactive,
+                                ResidentID = r.residentid,
+                                ResidentName = r.residentname,
+                                ResidentNumber = r.residentnumber
                             }
                         }).ToList();
             res.status = data.Count > 0;
@@ -76,21 +76,21 @@ namespace CoreSimpam.Repo
         {
             Metadata<CustomerViewModel> res = new Metadata<CustomerViewModel>();
             var data = (from c in context.Customer
-                        join r in context.Resident on c.ResidentID equals r.ResidentID
-                        where c.CustomerID == CustomerID
+                        join r in context.Resident on c.residentid equals r.residentid
+                        where c.customerid == CustomerID
                         select new CustomerViewModel()
                         {
-                            CustomerAddress = c.CustomerAddress,
-                            CustomerID = c.CustomerID,
-                            CustomerName = c.CustomerName,
-                            CustomerNumber = c.CustomerNumber,
-                            Phone = c.Phone,
+                            CustomerAddress = c.customeraddress,
+                            CustomerID = c.customerid,
+                            CustomerName = c.customername,
+                            CustomerNumber = c.customernumber,
+                            Phone = c.phone,
                             Resident = new ResidentViewModel()
                             {
-                                IsActive = r.IsActive,
-                                ResidentID = r.ResidentID,
-                                ResidentName = r.ResidentName,
-                                ResidentNumber = r.ResidentNumber
+                                IsActive = r.isactive,
+                                ResidentID = r.residentid,
+                                ResidentName = r.residentname,
+                                ResidentNumber = r.residentnumber
                             }
                         }).FirstOrDefault();
             res.status = data != null;
@@ -103,11 +103,11 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var customer = (from r in context.Customer where r.CustomerName.ToLower().Replace(" ", "") == model.CustomerName.ToLower().Replace(" ", "") && r.CustomerID != model.CustomerID select r).FirstOrDefault();
+                var customer = (from r in context.Customer where r.customername.ToLower().Replace(" ", "") == model.CustomerName.ToLower().Replace(" ", "") && r.customerid != model.CustomerID select r).FirstOrDefault();
 
                 if (customer != null) { return new Metadata() { data = "Customer name is ready", status = false }; }
                 string NumbVal = $"CUS{DateTime.Now.ToString("yyyyMM")}";
-                var lastNumber = (from c in context.Customer where c.CustomerNumber.Contains(NumbVal) select c).OrderBy(x=> x.CustomerID).LastOrDefault()?.CustomerNumber;
+                var lastNumber = (from c in context.Customer where c.customernumber.Contains(NumbVal) select c).OrderBy(x=> x.customerid).LastOrDefault()?.customernumber;
 
                 if (lastNumber == null)
                     model.CustomerNumber = $"{NumbVal}00001";
@@ -116,11 +116,11 @@ namespace CoreSimpam.Repo
 
                 context.Customer.Add(new CustomerModel()
                 {
-                    CustomerAddress = model.CustomerAddress,
-                    CustomerName = model.CustomerName,
-                    CustomerNumber = model.CustomerNumber,
-                    Phone = model.Phone,
-                    ResidentID = model.Resident.ResidentID
+                    customeraddress = model.CustomerAddress,
+                    customername = model.CustomerName,
+                    customernumber = model.CustomerNumber,
+                    phone = model.Phone,
+                    residentid = model.Resident.ResidentID
                 });
 
                 await context.SaveChangesAsync();
@@ -138,17 +138,17 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var customer = (from r in context.Customer where r.CustomerName.ToLower().Replace(" ", "") == model.CustomerName.ToLower().Replace(" ", "") && r.CustomerID != model.CustomerID select r).FirstOrDefault();
+                var customer = (from r in context.Customer where r.customername.ToLower().Replace(" ", "") == model.CustomerName.ToLower().Replace(" ", "") && r.customerid != model.CustomerID select r).FirstOrDefault();
 
                 if (customer != null) { return new Metadata() { data = "Customer name is ready", status = false }; }
 
-                customer = (from r in context.Customer where r.CustomerID == model.CustomerID select r).FirstOrDefault();
+                customer = (from r in context.Customer where r.customerid == model.CustomerID select r).FirstOrDefault();
 
                 if (customer == null) { return new Metadata() { data = "Customer not found", status = false }; }
 
-                customer.CustomerAddress = model.CustomerAddress;
-                customer.CustomerName = model.CustomerName;
-                customer.Phone = model.Phone;
+                customer.customeraddress = model.CustomerAddress;
+                customer.customername = model.CustomerName;
+                customer.phone = model.Phone;
 
                 await context.SaveChangesAsync();
                 res.status = true;

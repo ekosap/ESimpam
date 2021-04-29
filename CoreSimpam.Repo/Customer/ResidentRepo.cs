@@ -31,7 +31,7 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var resident = (from r in context.Resident where r.ResidentID == ResidentID select r).FirstOrDefault();
+                var resident = (from r in context.Resident where r.residentid == ResidentID select r).FirstOrDefault();
 
                 if (resident == null) { return new Metadata() { data = "Resident not found", status = false }; }
 
@@ -54,10 +54,10 @@ namespace CoreSimpam.Repo
             var data = (from r in context.Resident
                         select new ResidentViewModel()
                         {
-                            IsActive = r.IsActive,
-                            ResidentID = r.ResidentID,
-                            ResidentName = r.ResidentName,
-                            ResidentNumber = r.ResidentNumber
+                            IsActive = r.isactive,
+                            ResidentID = r.residentid,
+                            ResidentName = r.residentname,
+                            ResidentNumber = r.residentnumber
                         }).ToList();
             res.status = data.Count > 0;
             res.data = data;
@@ -68,14 +68,14 @@ namespace CoreSimpam.Repo
         {
             Metadata<ResidentViewModel> res = new Metadata<ResidentViewModel>();
             var data = (from r in context.Resident
-                        where r.ResidentID == ResidentID
+                        where r.residentid == ResidentID
                         select new ResidentViewModel()
                         {
-                            IsActive = r.IsActive,
-                            ResidentID = r.ResidentID,
-                            ResidentName = r.ResidentName,
-                            ResidentNumber = r.ResidentNumber,
-                            Price = r.Price
+                            IsActive = r.isactive,
+                            ResidentID = r.residentid,
+                            ResidentName = r.residentname,
+                            ResidentNumber = r.residentnumber,
+                            Price = r.price
                         }).FirstOrDefault();
             res.status = data != null;
             res.data = data;
@@ -87,11 +87,11 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var resident = (from r in context.Resident where r.ResidentName.ToLower().Replace(" ", "") == model.ResidentName.ToLower().Replace(" ", "") && r.ResidentID != model.ResidentID select r).FirstOrDefault();
+                var resident = (from r in context.Resident where r.residentname.ToLower().Replace(" ", "") == model.ResidentName.ToLower().Replace(" ", "") && r.residentid != model.ResidentID select r).FirstOrDefault();
 
                 if(resident != null) { return new Metadata() { data = "Resident name is ready", status = false }; }
                 string NumberVal = "RC"+DateTime.Now.ToString("yyyyMM");
-                var lastNumber = (from r in context.Resident where r.ResidentNumber.Contains(NumberVal) select r).OrderBy(x=>x.ResidentID).LastOrDefault()?.ResidentNumber;
+                var lastNumber = (from r in context.Resident where r.residentnumber.Contains(NumberVal) select r).OrderBy(x=>x.residentid).LastOrDefault()?.residentnumber;
 
                 if (lastNumber == null) 
                     model.ResidentNumber = $"{NumberVal}001";
@@ -100,10 +100,10 @@ namespace CoreSimpam.Repo
 
                 context.Resident.Add(new ResidentModel()
                 {
-                    IsActive = model.IsActive,
-                    ResidentName = model.ResidentName,
-                    ResidentNumber = model.ResidentNumber,
-                    Price = model.Price
+                    isactive = model.IsActive,
+                    residentname = model.ResidentName,
+                    residentnumber = model.ResidentNumber,
+                    price = model.Price
                 });
 
                 await context.SaveChangesAsync();
@@ -121,17 +121,17 @@ namespace CoreSimpam.Repo
             Metadata res = new Metadata();
             try
             {
-                var resident = (from r in context.Resident where r.ResidentName.ToLower().Replace(" ", "") == model.ResidentName.ToLower().Replace(" ", "") && r.ResidentID != model.ResidentID select r).FirstOrDefault();
+                var resident = (from r in context.Resident where r.residentname.ToLower().Replace(" ", "") == model.ResidentName.ToLower().Replace(" ", "") && r.residentid != model.ResidentID select r).FirstOrDefault();
 
                 if (resident != null) { return new Metadata() { data = "Resident name is ready", status = false }; }
 
-                resident = (from r in context.Resident where r.ResidentID == model.ResidentID select r).FirstOrDefault();
+                resident = (from r in context.Resident where r.residentid == model.ResidentID select r).FirstOrDefault();
 
                 if (resident == null) { return new Metadata() { data = "Resident not found", status = false }; }
 
-                resident.ResidentName = model.ResidentName;
-                resident.IsActive = model.IsActive;
-                resident.Price = model.Price;
+                resident.residentname = model.ResidentName;
+                resident.isactive = model.IsActive;
+                resident.price = model.Price;
 
                 await context.SaveChangesAsync();
                 res.status = true;

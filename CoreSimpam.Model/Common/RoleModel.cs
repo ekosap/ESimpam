@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoreSimpam.Model
 {
-    [Table("Roles", Schema = "Common")]
-    public class RoleModel
+    [Table("roles", Schema = "common")]
+    public class RoleModel : DTOBase
     {
         [Key]
-        public long RoleID { get; set; }
-        public string RoleName { get; set; }
-        public bool IsEnabled { get; set; }
-        public virtual UserModel User { get; set; }
-        public virtual List<RoleScreenModel> RoleScreens { get; set; }
+        public long roleid { get; set; }
+        public string rolename { get; set; }
+        public bool isenabled { get; set; }
+        public virtual UserModel user { get; set; }
+        public virtual List<RoleScreenModel> rolescreens { get; set; }
     }
 }
