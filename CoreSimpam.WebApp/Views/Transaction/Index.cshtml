@@ -1,5 +1,7 @@
-﻿@section styles{
+﻿@model CoreSimpam.ViewModel.TransactionViewModel
+@section styles{
     @await Html.PartialAsync("CssPartial/_DatePickerCSSPartial")
+    @await Html.PartialAsync("CssPartial/_JExcelCSSPartial")
     <style type="text/css">
         .table tr td {
             vertical-align: middle;
@@ -7,71 +9,122 @@
     </style>
 }
 
-<div class="col-sm-12">
-    <div class="card card-default">
-        <div class="card-header">
-            <h3 class="card-title">@ViewData["Title"]</h3>
-            <div class="card-tools">
-                <button class="btn btn-tool btn-outline-primary" id="btnAdd">Add</button>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Transaction</h3>
             </div>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-            <div class="row">
-                <!-- Date mm/dd/yyyy -->
-                <div class="form-group">
-                    <div class="input-group">
-                        <label>Date:</label>
-                        <div class="input-group monthpicker" id="reservationdate" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" />
-                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form class="form-horizontal" asp-action="Transaction" asp-controller="Api" method="get" id="form-filter">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <label for="txtMonthPicker" class="col-sm-1 col-form-label mt-1">Month</label>
+                        <div class="col-sm-4 mt-1">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" asp-for="TrxDate" />
+                        </div>
+                        <label for="Resident" class="col-sm-1 col-form-label mt-1">Resident</label>
+                        <div class="col-sm-4 mt-1">
+                            <input type="text" class="form-control" asp-for="ResidentID">
+                        </div>
+                        <div class="col-sm-2 mt-1">
+                            <button class="btn btn-info" type="submit">Get</button>
                         </div>
                     </div>
-                    <!-- /.input group -->
                 </div>
-                <!-- /.form group -->
-            </div>
-            <div class="row">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm" id="tbList" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-1">#</th>
-                                <th scope="col" class="col-2">Customer Number</th>
-                                <th scope="col" class="col-3">Customer Name</th>
-                                <th scope="col" class="col-2">Customer Address</th>
-                                <th scope="col" class="col-2">Phone</th>
-                                <th scope="col" class="col-2">Resident</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
+                <!-- /.card-body -->
+            </form>
         </div>
+    </div>
+    <div class="col-12">
+        <div id="spreadsheet"></div>
     </div>
 </div>
 
+<input type="hidden" class="form-control" id="txtData">
 
-<div class="modal fade" id="modal-input" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
 @section Scripts{
     @await Html.PartialAsync("ScriptsPartial/_DatePickerScriptsPartial")
+    @await Html.PartialAsync("ScriptsPartial/_JExcelScriptsPartial")
     <script type="text/javascript">
 
-        $(document).ready(function () {
-           
-            $('.monthpicker').datetimepicker({
-                format: 'MMM YYYY',
-                changeMonth: true,
-                changeYear:true
+        let changed = function (instance, cell, x, y, value) {
+            let data = excel.getJson(false);
+            data.forEach((obj) => {
+                obj['qty'] = (obj['afterAmount'] || 0) - (obj['beforeAmount'] || 0)
             });
+            excel.setData(data);
+            $('#txtData').val(JSON.stringify(data));
+        };
+        let excel = $('#spreadsheet').jexcel({
+            data: null,
+            columns: [
+                {
+                    type: 'number',
+                    title: 'After Amount',
+                    width:'150',
+                    name:'afterAmount'
+                },
+                {
+                    type: 'number',
+                    title: 'Before Amount',
+                    width: '150',
+                    name: 'beforeAmount'
+                },
+                {
+                    type: 'number',
+                    title: 'Price',
+                    width: '150',
+                    readOnly: true,
+                    name: 'price'
+                },
+                {
+                    type: 'number',
+                    title: 'Quantity',
+                    width: '150',
+                    name: 'qty'
+                },
+            ],
+            columnDrag: false,
+            columnSorting: false,
+            onchange: changed,
+            csvFileName: 'Transaction',
+            tableOverflow:true
         });
 
+        $(document).ready(function () {
+            $('.datetimepicker-input').datetimepicker({
+                format: 'MMM YYYY',
+                changeMonth: true,
+                changeYear: true,
+            });
+
+            $(".datetimepicker-input").focus(function () {
+                $(".datetimepicker-input").datetimepicker("show");
+            });
+
+            $(document).on("submit", '#form-filter', function () {
+                var btn = $(this).find("button[type='submit']");
+                var text = btn.html();
+                Loading(true, btn, text);
+                $.ajax({
+                    url: $(this).attr('Action'),
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    method: 'get',
+                    success: function (x) {
+                        if (x.status === true) {
+                            excel.setData(x.data.listItemTrx);
+                        }
+                    },
+                    error: function (e) {
+                        swal(JSON.parse(e.responseText).data);
+                    }
+                });
+                Loading(false, btn, text);
+                return false;
+            });
+        });
     </script>
 }

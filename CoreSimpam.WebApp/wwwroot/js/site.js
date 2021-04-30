@@ -28,7 +28,8 @@ function Loading(isLoad, button, text) {
         button.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
     }
     else {
-        button.html(text);
+        if (text !== null || text !== undefined || text !== '')
+            button.html(text);
     }
     button.attr('disabled', isLoad);
 }
@@ -37,4 +38,34 @@ function Combobox(selectElement) {
         theme: 'bootstrap4',
         width: '100%'
     });
+}
+Date.prototype.toShortFormat = function () {
+
+    let monthNames = ["Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"];
+
+    let day = this.getDate();
+
+    let monthIndex = this.getMonth();
+    let monthName = monthNames[monthIndex];
+
+    let year = this.getFullYear();
+
+    return `${day} ${monthName} ${year}`;
+}
+Date.prototype.toMMMyyyyFormat = function () {
+
+    let monthNames = ["Jan", "Feb", "Mar", "Apr",
+        "May", "Jun", "Jul", "Aug",
+        "Sep", "Oct", "Nov", "Dec"];
+
+    let day = this.getDate();
+
+    let monthIndex = this.getMonth();
+    let monthName = monthNames[monthIndex];
+
+    let year = this.getFullYear();
+
+    return `${monthName} ${year}`;
 }

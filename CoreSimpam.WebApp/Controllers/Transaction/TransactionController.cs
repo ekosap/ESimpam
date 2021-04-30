@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CoreSimpam.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace CoreSimpam.WebApp.Controllers.Transaction
         }
         public IActionResult Index()
         {
-            return View();
+            var model = new TransactionViewModel();
+            return View(model);
         }
     }
 }

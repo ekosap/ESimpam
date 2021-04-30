@@ -19,9 +19,9 @@ namespace CoreSimpam.WebApp.Controllers.API
             repo = transactionRepo;
         }
         [HttpGet]
-        public async Task<Metadata<TransactionViewModel>> GetAsync(DateTime date, long ResidentID)
+        public async Task<Metadata<TransactionViewModel>> GetAsync(DateTime TrxDate, long ResidentID)
         {
-            var data = await repo.GetTransaction(date, ResidentID);
+            var data = await repo.GetTransaction(TrxDate, ResidentID);
             return data;
         }
     }
