@@ -17,8 +17,45 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Theme style -->
     <link rel="stylesheet" href="/lib/AdminLTE/dist/css/adminlte.min.css" asp-append-version="true">
     @await RenderSectionAsync("styles", required: false)
+    <style type="text/css">
+        .spinner {
+            border: 16px solid silver;
+            border-top: 16px solid #337AB7;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 700ms linear infinite;
+            top: 40%;
+            left: 45%;
+            position: absolute;
+        }
+
+        .loading {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: whitesmoke;
+            opacity: 0.9;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg)
+            }
+
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
+    <div class="loading">
+        <div class="spinner"></div>
+    </div>
     <div class="wrapper">
         @await Html.PartialAsync("AdminLTEComponents/Navbar")
         @*@await Component.InvokeAsync("UserMenu")*@
@@ -58,21 +95,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="~/js/sweetalert.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.ajax({
-                url: '/api/menu',
-                method: 'get',
-                dataType: 'json',
-                success: function (e) {
-                    buildMenu(e, $('#menu'));
-                },
-                error: function (e) {
-                    alert(e.statusText)
-                }
-            });
-            return false;
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/menu',
+            method: 'get',
+            dataType: 'json',
+            success: function (e) {
+                buildMenu(e, $('#menu'));
+            },
+            error: function (e) {
+                alert(e.statusText)
+            }
         });
-    </script>
+        $('.loading').toggleClass('d-none');
+    });
+</script>
 </body>
 </html>

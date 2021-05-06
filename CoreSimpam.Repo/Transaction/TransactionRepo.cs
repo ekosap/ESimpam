@@ -47,6 +47,8 @@ namespace CoreSimpam.Repo
                                && (ResidentID == 0 ? true : (c.residentid == ResidentID))
                                select new TrxItemViewModel()
                                {
+                                   CustomerName = c.customername,
+                                   CustomerNumber = c.customernumber,
                                    AfterAmount = cti.afteramount,
                                    BeforeAmount = cti.beforeamount,
                                    CustomerID = cti.customerid,

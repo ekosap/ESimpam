@@ -9,37 +9,34 @@
     </style>
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="card card-info">
-            <div class="card-header">
-                <h3 class="card-title">Transaction</h3>
-            </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form class="form-horizontal" asp-action="Transaction" asp-controller="Api" method="get" id="form-filter">
-                <div class="card-body">
-                    <div class="form-group row">
-                        <label for="txtMonthPicker" class="col-sm-1 col-form-label mt-1">Month</label>
-                        <div class="col-sm-4 mt-1">
-                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" asp-for="TrxDate" />
-                        </div>
-                        <label for="Resident" class="col-sm-1 col-form-label mt-1">Resident</label>
-                        <div class="col-sm-4 mt-1">
-                            <input type="text" class="form-control" asp-for="ResidentID">
-                        </div>
-                        <div class="col-sm-2 mt-1">
-                            <button class="btn btn-info" type="submit">Get</button>
-                        </div>
+<div class="col-12">
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Transaction</h3>
+        </div>
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form class="form-horizontal" asp-action="Transaction" asp-controller="Api" method="get" id="form-filter">
+            <div class="card-body">
+                <div class="form-group row">
+                    <label for="txtMonthPicker" class="col-sm-1 col-form-label mt-1">Month</label>
+                    <div class="col-sm-4 mt-1">
+                        <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" asp-for="TrxDate" />
+                    </div>
+                    <label for="Resident" class="col-sm-1 col-form-label mt-1">Resident</label>
+                    <div class="col-sm-4 mt-1">
+                        <input type="text" class="form-control" asp-for="ResidentID">
+                    </div>
+                    <div class="col-sm-2 mt-1">
+                        <button class="btn btn-info" type="submit">Get</button>
                     </div>
                 </div>
-                <!-- /.card-body -->
-            </form>
-        </div>
+            </div>
+            <!-- /.card-body -->
+        </form>
     </div>
-    <div class="col-12">
-        <div id="spreadsheet"></div>
-    </div>
+</div>
+<div class="d-none" id="panelSpread" style="width:100%">
 </div>
 
 <input type="hidden" class="form-control" id="txtData">
@@ -48,8 +45,8 @@
     @await Html.PartialAsync("ScriptsPartial/_DatePickerScriptsPartial")
     @await Html.PartialAsync("ScriptsPartial/_JExcelScriptsPartial")
     <script type="text/javascript">
-
-        let changed = function (instance, cell, x, y, value) {
+        const panelSpread = document.getElementById('panelSpread');
+        const changed = function (instance, cell, x, y, value) {
             let data = excel.getJson(false);
             data.forEach((obj) => {
                 obj['qty'] = (obj['afterAmount'] || 0) - (obj['beforeAmount'] || 0)
@@ -57,40 +54,32 @@
             excel.setData(data);
             $('#txtData').val(JSON.stringify(data));
         };
-        let excel = $('#spreadsheet').jexcel({
+        const excel = new Handsontable(panelSpread, {
             data: null,
+            colHeaders: ['Customer Name', 'Customer Number', 'Before Amount', 'After Amount', 'Price', 'Qty'],
             columns: [
-                {
-                    type: 'number',
-                    title: 'After Amount',
-                    width:'150',
-                    name:'afterAmount'
-                },
-                {
-                    type: 'number',
-                    title: 'Before Amount',
-                    width: '150',
-                    name: 'beforeAmount'
-                },
-                {
-                    type: 'number',
-                    title: 'Price',
-                    width: '150',
-                    readOnly: true,
-                    name: 'price'
-                },
-                {
-                    type: 'number',
-                    title: 'Quantity',
-                    width: '150',
-                    name: 'qty'
-                },
+                { data: 'customerName', width:200 },
+                { data: 'customerNumber', width: 200 },
+                { data: 'beforeAmount', readOnly: false, width: 150 },
+                { data: 'afterAmount', readOnly: false, width: 150},
+                { data: 'price', type: 'numeric', width: 150 },
+                { data: 'qty', width: 100 }
             ],
-            columnDrag: false,
-            columnSorting: false,
-            onchange: changed,
-            csvFileName: 'Transaction',
-            tableOverflow:true
+            rowHeaders: true,
+            stretchH: 'all',
+            readOnly: true,
+            filters: false,
+            dropdownMenu: false,
+            licenseKey: 'non-commercial-and-evaluation',
+            afterChange: function (changes, source) {
+                if (changes) {
+                    let data = this.getSourceData();
+                    const index = changes[0][0];
+                    const afterA = parseFloat(data[index]['afterAmount']) || 0;
+                    const beforeA = parseFloat(data[index]['beforeAmount']) || 0;
+                    this.setSourceDataAtCell(index, 'qty', (afterA - beforeA), source);
+                }
+            }
         });
 
         $(document).ready(function () {
@@ -115,7 +104,11 @@
                     method: 'get',
                     success: function (x) {
                         if (x.status === true) {
-                            excel.setData(x.data.listItemTrx);
+                            if ($('#panelSpread').hasClass("d-none"))
+                                $('#panelSpread').toggleClass('d-none');
+                            excel.loadData(x.data.listItemTrx);
+                            setTimeout(excel.render(), 3000);
+
                         }
                     },
                     error: function (e) {
