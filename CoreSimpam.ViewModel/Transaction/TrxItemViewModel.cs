@@ -18,5 +18,6 @@ namespace CoreSimpam.ViewModel
         public decimal? Price { get; set; }
         public string CustomerName { get; set; }
         public string CustomerNumber { get; set; }
+        public decimal? Total => Qty * Price;
     }
 }
